@@ -1,10 +1,11 @@
 // --- 1. STAŁE I ZMIENNE GLOBALNE ---
 
 // Domyślne ceny paliw (fallback) w zł/l
+// AKTUALIZACJA: 29.11.2025 - średnie ceny w Polsce
 const DEFAULT_PRICES = {
-    PB95: 6.89,
-    ON: 6.71,
-    LPG: 3.15 
+    PB95: 5.88,  // Aktualna średnia krajowa
+    ON: 6.19,    // Aktualna średnia krajowa
+    LPG: 2.61    // Aktualna średnia krajowa
 };
 
 // Współczynniki konwersji spalania w stosunku do PB95
@@ -607,48 +608,93 @@ async function fetchFromAutoCentrum() {
         
         console.log('AutoCentrum HTML length:', html.length);
         
+        // DEBUG: Pokaż fragment HTML z cenami
+        const priceSection = html.match(/95[\s\S]{0,200}zł/);
+        if (priceSection) {
+            console.log('DEBUG - Fragment HTML z cenami:', priceSection[0]);
+        }
+        
         // Parsowanie - szukamy bloków z konkretnymi paliwami
         const prices = {};
         
-        // Regex dla PB95 (benzyna 95)
-        const pb95Match = html.match(/95[^0-9]*?(\d+[,\.]\d+)\s*z[łl]/i);
-        if (pb95Match) {
-            prices.PB95 = parseFloat(pb95Match[1].replace(',', '.'));
-            console.log('AutoCentrum PB95:', prices.PB95);
+        // ROZSZERZONE WZORCE - próbujemy różnych formatów
+        
+        // PB95 - różne możliwe formaty
+        const pb95Patterns = [
+            /95[^\d]*?(\d+[,\.]\d+)\s*zł/i,
+            /pb.*?95[^\d]*?(\d+[,\.]\d+)\s*zł/i,
+            /benzyna.*?95[^\d]*?(\d+[,\.]\d+)\s*zł/i,
+            />\s*95\s*<[\s\S]{0,100}?(\d+[,\.]\d+)\s*zł/i
+        ];
+        
+        for (const pattern of pb95Patterns) {
+            const match = html.match(pattern);
+            if (match) {
+                prices.PB95 = parseFloat(match[1].replace(',', '.'));
+                console.log('AutoCentrum PB95 found with pattern:', pattern, '=> ', prices.PB95);
+                break;
+            }
         }
         
-        // Regex dla ON (olej napędowy) - musi być osobno!
-        // Szukamy "ON" ale NIE "ON+" 
-        const onMatch = html.match(/\bON\b[^+]*?(\d+[,\.]\d+)\s*z[łl]/i);
-        if (onMatch) {
-            prices.ON = parseFloat(onMatch[1].replace(',', '.'));
-            console.log('AutoCentrum ON:', prices.ON);
+        // ON - różne możliwe formaty
+        const onPatterns = [
+            /\bON\b[^+\d]*?(\d+[,\.]\d+)\s*zł/i,
+            /olej.*?napędow[^\d]*?(\d+[,\.]\d+)\s*zł/i,
+            /diesel[^\d]*?(\d+[,\.]\d+)\s*zł/i,
+            />\s*ON\s*<[\s\S]{0,100}?(\d+[,\.]\d+)\s*zł/i
+        ];
+        
+        for (const pattern of onPatterns) {
+            const match = html.match(pattern);
+            if (match) {
+                prices.ON = parseFloat(match[1].replace(',', '.'));
+                console.log('AutoCentrum ON found with pattern:', pattern, '=> ', prices.ON);
+                break;
+            }
         }
         
-        // Regex dla LPG
-        const lpgMatch = html.match(/LPG[^0-9]*?(\d+[,\.]\d+)\s*z[łl]/i);
-        if (lpgMatch) {
-            prices.LPG = parseFloat(lpgMatch[1].replace(',', '.'));
-            console.log('AutoCentrum LPG:', prices.LPG);
+        // LPG - różne możliwe formaty
+        const lpgPatterns = [
+            /LPG[^\d]*?(\d+[,\.]\d+)\s*zł/i,
+            /gaz[^\d]*?(\d+[,\.]\d+)\s*zł/i,
+            />\s*LPG\s*<[\s\S]{0,100}?(\d+[,\.]\d+)\s*zł/i
+        ];
+        
+        for (const pattern of lpgPatterns) {
+            const match = html.match(pattern);
+            if (match) {
+                prices.LPG = parseFloat(match[1].replace(',', '.'));
+                console.log('AutoCentrum LPG found with pattern:', pattern, '=> ', prices.LPG);
+                break;
+            }
         }
+        
+        console.log('AutoCentrum znalezione ceny:', prices);
         
         // Walidacja - czy mamy PB95 i ON, i czy są w rozsądnym zakresie
         if (prices.PB95 && prices.ON && 
             prices.PB95 > 4 && prices.PB95 < 10 && 
             prices.ON > 4 && prices.ON < 10 &&
-            prices.PB95 !== prices.ON) {  // WAŻNE: PB95 i ON nie mogą być takie same!
+            prices.PB95 !== prices.ON) {
             
             console.log('AutoCentrum SUCCESS:', prices);
             return {
                 PB95: prices.PB95,
                 ON: prices.ON,
-                LPG: prices.LPG || 3.15,  // Fallback dla LPG
+                LPG: prices.LPG || 3.15,
                 source: 'AutoCentrum.pl',
                 date: new Date().toISOString().split('T')[0]
             };
         }
         
         console.error('AutoCentrum: Ceny nieprawidłowe lub identyczne:', prices);
+        
+        // DEBUG: Jeśli nie znalazło, pokaż WSZYSTKIE wystąpienia "zł"
+        const allPrices = html.match(/(\d+[,\.]\d+)\s*zł/g);
+        if (allPrices) {
+            console.log('DEBUG - Wszystkie znalezione ceny w HTML:', allPrices.slice(0, 10));
+        }
+        
         return null;
         
     } catch (error) {
