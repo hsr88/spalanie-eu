@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API - Spalanie.eu</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0f172a;
+            color: #f1f5f9;
+        }
+        .container {
+            background: rgba(30, 41, 59, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+        }
+        h1 {
+            color: #00e0ff;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #00e0ff;
+            color: #0f172a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #00b3cc;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 8px;
+            border-left: 4px solid #00e0ff;
+        }
+        .error {
+            border-left-color: #ef4444;
+            color: #fca5a5;
+        }
+        .success {
+            border-left-color: #10b981;
+            color: #86efac;
+        }
+        pre {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .info {
+            background: #334155;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            margin: 5px 0;
+        }
+        .status.ok {
+            background: #10b981;
+            color: white;
+        }
+        .status.fail {
+            background: #ef4444;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Netlify Functions API</h1>
+        
+        <div class="info">
+            <strong>Instrukcja:</strong><br>
+            1. Upewnij się, że plik <code>netlify/functions/fuel-prices.js</code> jest wdrożony<br>
+            2. Kliknij przycisk poniżej aby przetestować Function<br>
+            3. Sprawdź czy odpowiedź zawiera aktualne ceny
+        </div>
+
+        <button onclick="testBackend()">🧪 Testuj Netlify Function</button>
+        <button onclick="testOrlen()">🧪 Testuj Orlen API</button>
+        <button onclick="clearResults()">🗑️ Wyczyść wyniki</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+
+        async function testBackend() {
+            addResult('info', '⏳ Testowanie Netlify Function...');
+            
+            try {
+                // URL dla Netlify Function
+                const response = await fetch('/.netlify/functions/fuel-prices');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    addResult('success', `
+                        <strong>✅ Netlify Function działa poprawnie!</strong><br><br>
+                        <span class="status ok">OK</span><br><br>
+                        <strong>Źródło:</strong> ${data.source}<br>
+                        <strong>PB95:</strong> ${data.prices.PB95} zł/l<br>
+                        <strong>ON:</strong> ${data.prices.ON} zł/l<br>
+                        <strong>LPG:</strong> ${data.prices.LPG} zł/l<br>
+                        <strong>Data aktualizacji:</strong> ${data.update_date || data.timestamp}<br><br>
+                        <strong>Pełna odpowiedź JSON:</strong>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `);
+                } else {
+                    addResult('error', `
+                        <strong>⚠️ Function działa, ale używa cen domyślnych</strong><br><br>
+                        <span class="status fail">FALLBACK</span><br><br>
+                        ${data.message}<br><br>
+                        <strong>Ceny domyślne:</strong><br>
+                        PB95: ${data.prices.PB95} zł/l<br>
+                        ON: ${data.prices.ON} zł/l<br>
+                        LPG: ${data.prices.LPG} zł/l<br><br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `);
+                }
+                
+            } catch (error) {
+                addResult('error', `
+                    <strong>❌ Błąd połączenia z Netlify Function</strong><br><br>
+                    <span class="status fail">ERROR</span><br><br>
+                    ${error.message}<br><br>
+                    <strong>Możliwe przyczyny:</strong><br>
+                    • Function nie jest wdrożona<br>
+                    • Błąd w kodzie Function<br>
+                    • Brak package.json z node-fetch<br>
+                    • Niepoprawna struktura folderów<br><br>
+                    <strong>Sprawdź:</strong><br>
+                    1. Czy folder netlify/functions/ istnieje<br>
+                    2. Czy plik nazywa się fuel-prices.js<br>
+                    3. Netlify Functions log w panelu<br>
+                    4. Czy możesz otworzyć: <a href="/.netlify/functions/fuel-prices" target="_blank">/.netlify/functions/fuel-prices</a>
+                `);
+            }
+        }
+
+        async function testOrlen() {
+            addResult('info', '⏳ Testowanie Orlen API...');
+            
+            try {
+                const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+                const ORLEN_API = 'https://api.orlen.pl/api/fuelprices/wholesale';
+                
+                const response = await fetch(CORS_PROXY + encodeURIComponent(ORLEN_API));
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                const pb95 = data.find(item => item.productCode === 'B95');
+                const on = data.find(item => item.productCode === 'ON');
+                
+                const marginFactor = 1.4;
+                const pb95Price = pb95 ? ((pb95.price / 1000) * marginFactor).toFixed(2) : 'N/A';
+                const onPrice = on ? ((on.price / 1000) * marginFactor).toFixed(2) : 'N/A';
+                
+                addResult('success', `
+                    <strong>✅ Orlen API działa!</strong><br><br>
+                    <span class="status ok">OK</span><br><br>
+                    <strong>Ceny hurtowe (z marżą ${marginFactor}x):</strong><br>
+                    PB95: ${pb95Price} zł/l<br>
+                    ON: ${onPrice} zł/l<br>
+                    LPG: 3.15 zł/l (domyślna)<br><br>
+                    <strong>Pełna odpowiedź JSON:</strong>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `);
+                
+            } catch (error) {
+                addResult('error', `
+                    <strong>❌ Błąd Orlen API</strong><br><br>
+                    <span class="status fail">ERROR</span><br><br>
+                    ${error.message}<br><br>
+                    To API może być czasowo niedostępne lub zablokowane przez CORS.
+                `);
+            }
+        }
+
+        function addResult(type, content) {
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = content;
+            resultsDiv.appendChild(div);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Spalania, Kosztów Podróży i Emisji CO₂ | Spalanie.eu</title>
+    
+    <meta name="description" content="Szybki i responsywny kalkulator kosztów podróży, zużycia paliwa oraz emisji CO₂. Oblicz, ile zapłacisz za trasę i jak wpłyniesz na środowisko. Dane o cenach paliw z API.">
+    <meta name="keywords" content="kalkulator spalania, koszt podróży, emisja CO2, cena paliwa, l/100km, spalanie, paliwo, PB95, ON, LPG">
+    <meta name="author" content="Spalanie.eu">
+    <link rel="canonical" href="https://spalanie.eu/">
+
+    <meta property="og:title" content="Kalkulator Spalania, Kosztów Podróży i CO₂">
+    <meta property="og:description" content="Szybko oblicz, ile zapłacisz za trasę i ile wyniesie emisja CO₂. Działa offline!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://spalanie.eu/">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@spalanie_eu">
+    <meta name="twitter:title" content="Kalkulator Spalania i CO₂">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="calculator-card">
+        <div class="header-with-menu">
+            <h1 class="calculator-card__title">Kalkulator Podróży i CO₂</h1>
+            <button id="menuButton" class="hamburger-menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        
+        <div id="settingsMenu" class="settings-menu">
+            <div class="settings-content">
+                <button id="closeMenuButton" class="close-menu-btn">&times;</button>
+                <h2 class="menu-title">Ustawienia domyślne</h2>
+                <p class="menu-description">Wybierz paliwo dla głównego kosztu podróży, które zostanie zapisane w przeglądarce.</p>
+                
+                <div class="fuel-selection-group">
+                    <label>
+                        <input type="radio" name="defaultFuel" value="PB95" id="radioPB95"> Benzyna PB95
+                    </label>
+                    <label>
+                        <input type="radio" name="defaultFuel" value="ON" id="radioON"> Olej Napędowy (ON)
+                    </label>
+                    <label>
+                        <input type="radio" name="defaultFuel" value="LPG" id="radioLPG"> Gaz Płynny (LPG)
+                    </label>
+                </div>
+                <h2 class="menu-title" style="margin-top: 25px;">Ustaw własne ceny (zł/l)</h2>
+                <p class="menu-description">Wprowadź swoje lokalne ceny. Zostaną one zapisane i nadpiszą ceny pobrane z API.</p>
+
+                <div class="input-group">
+                    <label for="customPricePB95">Cena PB95</label>
+                    <input type="number" id="customPricePB95" value="" min="0.01" step="0.01" placeholder="Pozostaw puste, aby użyć ceny z API">
+                </div>
+                <div class="input-group">
+                    <label for="customPriceON">Cena Oleju Napędowego (ON)</label>
+                    <input type="number" id="customPriceON" value="" min="0.01" step="0.01" placeholder="Pozostaw puste, aby użyć ceny z API">
+                </div>
+                <div class="input-group">
+                    <label for="customPriceLPG">Cena Gazu Płynnego (LPG)</label>
+                    <input type="number" id="customPriceLPG" value="" min="0.01" step="0.01" placeholder="Pozostaw puste, aby użyć ceny domyślnej">
+                </div>
+
+            </div>
+        </div>
+            
+
+        <div class="input-group">
+            <label for="distance">Dystans (km)</label>
+            <div class="input-with-controls"> 
+                <input type="number" id="distance" value="100" min="1" step="10">
+                <button class="control-btn minus" data-target="distance" data-action="decrement">-</button>
+                <button class="control-btn plus" data-target="distance" data-action="increment">+</button>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="consumption">Spalanie (l/100 km) - dla PB95</label>
+            <div class="input-with-controls">
+                <input type="number" id="consumption" value="6.5" min="0.1" step="0.1">
+                <button class="control-btn minus" data-target="consumption" data-action="decrement">-</button>
+                <button class="control-btn plus" data-target="consumption" data-action="increment">+</button>
+            </div>
+        </div>
+
+        <section id="result" class="result">
+            <div class="result-box">
+                <span class="result-label" id="mainCostLabel">Koszt podróży (PB95)</span>
+                <p class="result-value" id="costValue">0.00 zł</p>
+            </div>
+            
+            <div class="result-box">
+                <span class="result-label">Zużyte paliwo</span>
+                <p class="result-value" id="litersValue">0.00 l</p>
+            </div>
+            
+            <div class="result-box">
+                <span class="result-label">Emisja CO₂</span>
+                <p class="result-value" id="co2Value">0 g</p>
+            </div>
+        </section>
+
+        <div class="co2-visualization">
+            <span class="co2-visualization__label">Intensywność emisji</span>
+            <div class="progress-bar-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            <div id="treeEstimate" class="tree-estimate">
+                </div>
+        </div>
+        
+        <section class="compare">
+            <h2 class="compare__title">Porównanie kosztów (zł)</h2>
+            <div class="fuel-options">
+                <div class="fuel-option fuel-pb95">
+                    <span class="fuel-label">PB95</span>
+                    <span class="fuel-cost" id="costPB95">0.00 zł</span>
+                    <span class="fuel-price-per-liter" id="pricePerLiterPB95">0.00 zł/l</span>
+                </div>
+                <div class="fuel-option fuel-on">
+                    <span class="fuel-label">ON</span>
+                    <span class="fuel-cost" id="costON">0.00 zł</span>
+                    <span class="fuel-price-per-liter" id="pricePerLiterON">0.00 zł/l</span>
+                </div>
+                <div class="fuel-option fuel-lpg">
+                    <span class="fuel-label">LPG</span>
+                    <span class="fuel-cost" id="costLPG">0.00 zł</span>
+                    <span class="fuel-price-per-liter" id="pricePerLiterLPG">0.00 zł/l</span>
+                </div>
+            </div>
+        </section>
+
+        <div id="priceInfo" class="price-source">
+            Ładowanie cen paliw...
+        </div>
+
+        <button id="shareButton" class="fab-share-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+        </button>
+        <div id="shareMessage" class="fab-share-message"></div>
+
+    </main>
+    
+    <script src="script.js"></script>
+</body>
+</html>
