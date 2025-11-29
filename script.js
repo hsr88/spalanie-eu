@@ -503,6 +503,67 @@ async function fetchFromBackend() {
 }
 
 /**
+ * Pobiera ceny z GlobalPetrolPrices.com (najprostsze i najbardziej niezawodne!)
+ */
+async function fetchFromGlobalPetrolPrices() {
+    try {
+        const CORS_PROXY = 'https://api.allorigins.win/get?url=';
+        const url = encodeURIComponent('https://www.globalpetrolprices.com/Poland/gasoline_prices/');
+        
+        const response = await fetch(CORS_PROXY + url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const html = data.contents;
+        
+        console.log('GlobalPetrolPrices HTML length:', html.length);
+        
+        // Szukamy ceny w PLN
+        // Format: "6.89 PLN" lub "Poland gasoline prices, 25-Nov-2025: The average price..."
+        const priceMatch = html.match(/(\d+\.\d+)\s*PLN/i) || 
+                          html.match(/price[^<]*?(\d+\.\d+)/i);
+        
+        if (priceMatch) {
+            const pb95Price = parseFloat(priceMatch[1]);
+            
+            // Walidacja (cena powinna być między 4 a 10 zł)
+            if (pb95Price > 4 && pb95Price < 10) {
+                // ON jest zwykle ~5% tańszy od PB95
+                const onPrice = Math.round(pb95Price * 0.95 * 100) / 100;
+                
+                // LPG jest ~40% tańszy
+                const lpgPrice = Math.round(pb95Price * 0.60 * 100) / 100;
+                
+                console.log('GlobalPetrolPrices SUCCESS:', { PB95: pb95Price, ON: onPrice, LPG: lpgPrice });
+                
+                return {
+                    PB95: pb95Price,
+                    ON: onPrice,
+                    LPG: lpgPrice,
+                    source: 'GlobalPetrolPrices.com',
+                    date: new Date().toISOString().split('T')[0]
+                };
+            }
+        }
+        
+        console.error('GlobalPetrolPrices: Nie znaleziono ceny lub jest nieprawidłowa');
+        return null;
+        
+    } catch (error) {
+        console.error('Błąd pobierania z GlobalPetrolPrices:', error);
+        return null;
+    }
+}
+
+/**
  * Próbuje pobrać ceny z AutoCentrum.pl poprzez CORS proxy
  */
 async function fetchFromAutoCentrum() {
@@ -524,22 +585,49 @@ async function fetchFromAutoCentrum() {
         const data = await response.json();
         const html = data.contents;
         
-        // Parsowanie HTML w poszukiwaniu cen
+        console.log('AutoCentrum HTML length:', html.length);
+        
+        // Parsowanie - AutoCentrum ma dane w HTML
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         
-        // AutoCentrum.pl używa JavaScript do ładowania danych,
-        // więc musimy szukać w innych miejscach lub użyć alternatywnego źródła
-        
-        // Próba znalezienia średnich cen w tabeli
-        const priceTexts = Array.from(doc.querySelectorAll('td, span, div'))
+        // Szukamy wszystkich elementów z cenami (format: X,XX zł)
+        const priceTexts = Array.from(doc.querySelectorAll('*'))
             .map(el => el.textContent.trim())
-            .filter(text => /\d+[.,]\d+\s*z/.test(text));
+            .filter(text => /\d+,\d+\s*z[łl]/.test(text));
         
         console.log('Znalezione ceny:', priceTexts);
         
-        // W tym miejscu należałoby dokładniej parsować strukturę strony
-        // Na razie zwracamy null, co spowoduje użycie innego źródła
+        // Wyciągamy liczby z tekstów
+        const prices = priceTexts
+            .map(text => {
+                const match = text.match(/(\d+,\d+)\s*z[łl]/);
+                return match ? parseFloat(match[1].replace(',', '.')) : null;
+            })
+            .filter(price => price !== null && price > 2 && price < 10); // Filtruj rozsądne ceny
+        
+        console.log('Wyciągnięte ceny:', prices);
+        
+        // AutoCentrum pokazuje ceny w kolejności: 95, 98, ON, ON+, LPG
+        if (prices.length >= 3) {
+            const pb95 = prices[0];  // Pierwsza cena = PB95
+            const on = prices[2];    // Trzecia cena = ON
+            const lpg = prices[4] || prices[prices.length - 1]; // Piąta lub ostatnia = LPG
+            
+            // Walidacja
+            if (pb95 > 4 && pb95 < 10 && on > 4 && on < 10) {
+                console.log('AutoCentrum SUCCESS:', { PB95: pb95, ON: on, LPG: lpg });
+                return {
+                    PB95: pb95,
+                    ON: on,
+                    LPG: lpg,
+                    source: 'AutoCentrum.pl',
+                    date: new Date().toISOString().split('T')[0]
+                };
+            }
+        }
+        
+        console.error('AutoCentrum: Nie udało się wyciągnąć poprawnych cen');
         return null;
         
     } catch (error) {
@@ -604,23 +692,29 @@ async function fetchFuelPrices() {
     let source = '';
     let updateDate = '';
 
-    // Strategia 1: Własny backend PHP (najlepsze rozwiązanie)
-    console.log('Próba pobrania cen z własnego backendu...');
-    prices = await fetchFromBackend();
+    // Strategia 1: GlobalPetrolPrices (najprostsze i najbardziej niezawodne)
+    console.log('Próba pobrania cen z GlobalPetrolPrices.com...');
+    prices = await fetchFromGlobalPetrolPrices();
     
-    // Strategia 2: Jeśli backend nie działa, próbuj AutoCentrum
+    // Strategia 2: Jeśli GlobalPetrolPrices nie działa, próbuj AutoCentrum
     if (!prices || !prices.PB95 || !prices.ON) {
-        console.log('Backend niedostępny, próba AutoCentrum.pl...');
+        console.log('GlobalPetrolPrices niedostępny, próba AutoCentrum.pl...');
         prices = await fetchFromAutoCentrum();
     }
     
-    // Strategia 3: Jeśli AutoCentrum nie działa, użyj Orlen
+    // Strategia 3: Jeśli AutoCentrum nie działa, próbuj Netlify Function (jeśli istnieje)
     if (!prices || !prices.PB95 || !prices.ON) {
-        console.log('AutoCentrum niedostępny, próba Orlen API...');
+        console.log('AutoCentrum niedostępny, próba Netlify Function...');
+        prices = await fetchFromBackend();
+    }
+    
+    // Strategia 4: Jeśli backend nie działa, użyj Orlen
+    if (!prices || !prices.PB95 || !prices.ON) {
+        console.log('Backend niedostępny, próba Orlen API...');
         prices = await fetchFromOrlen();
     }
     
-    // Strategia 4: Jeśli wszystko zawiedzie, użyj wartości domyślnych
+    // Strategia 5: Jeśli wszystko zawiedzie, użyj wartości domyślnych
     if (!prices || !prices.PB95 || !prices.ON) {
         console.log('Wszystkie API zawiodły, używam cen domyślnych');
         fuelPrices = { ...DEFAULT_PRICES };
