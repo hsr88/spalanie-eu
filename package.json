@@ -1,0 +1,25 @@
+{
+  "name": "spalanie-eu",
+  "version": "2.0.0",
+  "description": "Kalkulator spalania i kosztów podróży z automatycznym pobieraniem cen paliw",
+  "main": "index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build required'"
+  },
+  "keywords": [
+    "fuel",
+    "calculator",
+    "poland",
+    "paliwo",
+    "spalanie"
+  ],
+  "author": "spalanie.eu",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
+}

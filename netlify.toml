@@ -1,0 +1,47 @@
+# Netlify Configuration File
+# https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  # Folder z plikami do publikacji
+  publish = "."
+  
+  # Folder z funkcjami serverless
+  functions = "netlify/functions"
+
+# Ustawienia Functions
+[functions]
+  # Katalog z funkcjami
+  directory = "netlify/functions"
+  
+  # Node.js runtime
+  node_bundler = "esbuild"
+
+# Przekierowania i rewrites
+[[redirects]]
+  from = "/api/fuel-prices"
+  to = "/.netlify/functions/fuel-prices"
+  status = 200
+
+# Headers dla cache i CORS
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer-when-downgrade"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=86400" # 1 dzień
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=86400" # 1 dzień
+
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Cache-Control = "public, max-age=1800" # 30 minut
+    Access-Control-Allow-Origin = "*"

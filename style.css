@@ -1,0 +1,554 @@
+:root {
+    --bg-color: #0f172a; /* Ciemne tło */
+    --card-color: rgba(30, 41, 59, 0.9); /* Tło karty z przezroczystością */
+    --accent-color: #00e0ff;
+    --text-color: #f1f5f9;
+    --border-color: #334155;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+
+    --color-green: #10b981;
+    --color-yellow: #f59e0b;
+    --color-red: #ef4444;
+}
+
+/* Reset i podstawowe style (Mobile-First) */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Karta Kalkulatora (UI/UX) */
+.calculator-card {
+    width: 100%;
+    max-width: 560px;
+    padding: 30px;
+    background: var(--card-color);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 25px 50px -12px var(--shadow-color);
+    
+    /* Efekt 'blur' */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); 
+}
+
+/* --- Sekcja Menu i Tytułu --- */
+.header-with-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.calculator-card__title {
+    margin-bottom: 0;
+    flex-grow: 1;
+    text-align: left;
+    color: var(--accent-color);
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    color: var(--accent-color);
+    width: 40px;
+    height: 40px;
+    margin-right: -10px; 
+    transition: transform 0.3s;
+    flex-shrink: 0;
+}
+
+.hamburger-menu svg {
+    width: 100%;
+    height: 100%;
+}
+
+.hamburger-menu:hover {
+    transform: scale(1.1);
+}
+
+/* Settings Menu Overlay */
+.settings-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.settings-menu.is-open {
+    visibility: visible;
+    opacity: 1;
+}
+
+.settings-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80%;
+    max-width: 300px;
+    height: 100%;
+    background-color: var(--card-color);
+    padding: 30px;
+    box-shadow: -5px 0 15px var(--shadow-color);
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+}
+
+.settings-menu.is-open .settings-content {
+    transform: translateX(0);
+}
+
+.close-menu-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 2rem;
+    color: var(--text-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    z-index: 1001;
+}
+
+.menu-title {
+    color: var(--accent-color);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.menu-description {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin-bottom: 20px;
+}
+
+.fuel-selection-group label {
+    display: block;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: #1e293b;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.fuel-selection-group label:hover {
+    background-color: #334155;
+}
+
+.fuel-selection-group input[type="radio"] {
+    margin-right: 10px;
+    accent-color: var(--accent-color);
+}
+
+/* --- Inputy i Kontrolki --- */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--accent-color);
+    font-size: 0.9rem;
+}
+
+/* Ukrycie systemowych przycisków spin */
+.input-group input[type="number"]::-webkit-inner-spin-button,
+.input-group input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.input-group input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+    padding-right: 15px;
+}
+
+.input-with-controls {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.input-with-controls input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #1e293b;
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    /* Zrobienie miejsca na własne przyciski */
+    padding-right: 70px; 
+}
+
+.input-with-controls input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(0, 224, 255, 0.3);
+}
+#customPricePB95,
+#customPriceON,
+#customPriceLPG {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #1e293b;
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#customPricePB95:focus,
+#customPriceON:focus,
+#customPriceLPG:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(0, 224, 255, 0.3);
+}
+
+.control-btn {
+    position: absolute;
+    right: 0;
+    width: 35px;
+    height: 100%;
+    top: 0;
+    background-color: var(--accent-color);
+    color: var(--bg-color); 
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 700;
+    transition: background-color 0.2s, opacity 0.2s;
+    line-height: 1;
+}
+
+.control-btn.minus {
+    right: 35px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.control-btn.plus {
+    right: 0;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.control-btn:hover {
+    background-color: #00b3cc;
+}
+
+.control-btn:active {
+    opacity: 0.8;
+}
+
+/* --- Wyniki (3 Kolumny na Dużym Ekranie) --- */
+.result {
+    display: flex; 
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.result-box {
+    flex: 1; /* Równy podział na 3 kolumny */
+    text-align: center;
+    background-color: #1e293b;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.result-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 5px;
+}
+
+.result-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    line-height: 1.2;
+}
+
+/* --- Wizualizacja CO2 --- */
+.co2-visualization {
+    margin-bottom: 30px;
+}
+
+.co2-visualization__label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.progress-bar-container {
+    height: 15px;
+    background-color: #334155;
+    border-radius: 7px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background-color: var(--color-green);
+    /* Animacja paska */
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s;
+}
+
+.progress-bar--green { background-color: var(--color-green); }
+.progress-bar--yellow { background-color: var(--color-yellow); }
+.progress-bar--red { background-color: var(--color-red); }
+
+.tree-estimate {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--color-green);
+    font-weight: 500;
+}
+
+.tree-estimate svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+/* --- Porównanie Paliw --- */
+.compare {
+    padding-top: 20px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.compare__title {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.fuel-options {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+}
+
+.fuel-option {
+    flex: 1;
+    text-align: center;
+    padding: 15px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background-color: #1e293b;
+    transition: transform 0.3s;
+}
+
+.fuel-option:hover {
+    transform: translateY(-3px);
+}
+
+.fuel-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 5px;
+}
+
+.fuel-cost {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    display: block;
+}
+
+/* Koszt za litr (mniejsza czcionka) */
+.fuel-price-per-liter {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #94a3b8;
+}
+
+.fuel-pb95 .fuel-cost { color: var(--color-red); }
+.fuel-on .fuel-cost { color: var(--color-yellow); }
+.fuel-lpg .fuel-cost { color: var(--color-green); }
+
+/* --- Subtelne źródło cen --- */
+.price-source {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--border-color);
+    font-size: 0.75rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+/* Błąd API (szary) */
+.price-source--error {
+    color: #94a3b8;
+    border-left-color: #94a3b8; 
+}
+
+.price-source--success {
+    color: var(--accent-color);
+}
+
+/* --- Responsywność dla mniejszych ekranów --- */
+@media (max-width: 480px) {
+    .calculator-card {
+        padding: 20px 15px;
+    }
+
+    .calculator-card__title {
+        font-size: 1.5rem;
+    }
+    
+    .header-with-menu {
+        margin-bottom: 20px;
+    }
+
+    .result {
+        flex-direction: column; /* UKŁAD PIONOWY NA MOBILNYM */
+        gap: 10px;
+    }
+
+    .result-value {
+        font-size: 1.5rem;
+    }
+
+    .compare__title {
+        font-size: 1.1rem;
+    }
+
+    .fuel-options {
+        flex-direction: column;
+    }
+    
+    .fuel-option {
+        width: 100%;
+    }
+}
+/* --- Floating Action Button (FAB) dla Udostępniania --- */
+.calculator-card {
+    position: relative; /* Ważne dla pozycjonowania FAB */
+}
+.fab-share-btn {
+    position: absolute; 
+    bottom: 25px; 
+    right: 25px;  
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    /* ZMIANA: Usuwamy tło i cień */
+    background-color: transparent; 
+    border: 1px solid var(--border-color); /* Dodajemy subtelną ramkę */
+    box-shadow: none; 
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    z-index: 900; 
+}
+
+.fab-share-btn svg {
+    width: 24px;
+    height: 24px;
+    /* ZMIANA: Zmieniamy kolor ikony na akcent lub tekst */
+    stroke: var(--accent-color); 
+    color: var(--accent-color); /* Dla przeglądarek, które używają `color` dla stroke */
+}
+
+.fab-share-btn:hover {
+    /* ZMIANA: Przy najechaniu subtelne tło i lekki cień */
+    background-color: rgba(0, 224, 255, 0.1); 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.fab-share-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+    background-color: rgba(0, 224, 255, 0.2);
+}
+
+.fab-share-message {
+    position: absolute;
+    bottom: 40px; /* Obok przycisku, ale trochę wyżej */
+    right: 90px; /* Po lewej od przycisku */
+    background-color: rgba(30, 41, 59, 0.95); /* Tło dla komunikatu */
+    color: var(--color-green);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    white-space: nowrap; /* Zapobiega zawijaniu tekstu */
+    pointer-events: none; /* Nie blokuje kliknięć pod spodem */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 901;
+}
+
+.fab-share-message.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsywność dla FAB na małych ekranach */
+@media (max-width: 480px) {
+    .fab-share-btn {
+        bottom: 15px; /* Mniejsza odległość od dołu */
+        right: 15px; /* Mniejsza odległość od prawej */
+        width: 45px; /* Nieco mniejszy przycisk */
+        height: 45px;
+    }
+    .fab-share-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    .fab-share-message {
+        bottom: 30px;
+        right: 70px;
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+}
