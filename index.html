@@ -163,7 +163,7 @@
                         <label for="distance">📍 Dystans (km)</label>
                         <div class="input-with-controls">
                             <button class="control-btn" data-target="distance" data-action="decrement">−</button>
-                            <input type="number" id="distance" min="1" placeholder="np. 300" required>
+                            <input type="number" id="distance" min="1" value="100" required>
                             <button class="control-btn" data-target="distance" data-action="increment">+</button>
                         </div>
                     </div>
@@ -172,7 +172,7 @@
                         <label for="consumption">⛽ Spalanie (l/100km)</label>
                         <div class="input-with-controls">
                             <button class="control-btn" data-target="consumption" data-action="decrement">−</button>
-                            <input type="number" id="consumption" min="1" step="0.1" placeholder="np. 7.5" required>
+                            <input type="number" id="consumption" min="1" step="0.1" value="7.5" required>
                             <button class="control-btn" data-target="consumption" data-action="increment">+</button>
                         </div>
                         <span class="input-hint">Średnie spalanie twojego auta</span>
@@ -208,9 +208,7 @@
                             <div class="progress-bar" id="progressBar"></div>
                         </div>
                         <div class="tree-estimate" id="treeEstimate">
-                            <svg viewBox="0 0 24 24" fill="currentColor" class="tree-icon">
-                                <path d="M11.96 22a.5.5 0 01-.5-.5v-4.66a.5.5 0 01.5-.5h.08a.5.5 0 01.5.5v4.66a.5.5 0 01-.5.5h-.08zM12 2C7.03 2 3 6.03 3 11a9 9 0 001.07 4.19.5.5 0 00.9-.38A7.99 7.99 0 0112 4a7.99 7.99 0 018.03 10.81.5.5 0 00.9.38A9 9 0 0021 11c0-4.97-4.03-9-9-9zm0 18a8.97 8.97 0 006.18-2.67 1.5 1.5 0 00-.73-2.6 7 7 0 01-10.9 0 1.5 1.5 0 00-.73 2.6A8.97 8.97 0 0012 20z"/>
-                            </svg>
+                            <span style="font-size: 1.5rem;">🌳</span>
                             <span>0 drzew/dzień</span>
                         </div>
                         <p class="eco-text">Tyle drzew potrzebuje do wchłonięcia tej emisji</p>

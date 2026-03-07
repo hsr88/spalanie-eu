@@ -150,7 +150,7 @@ function calculate() {
         $litersValue.textContent = '0.00 l';
         $co2Value.textContent = '0 g';
         $progressBar.style.width = '0%';
-        $treeEstimate.innerHTML = TREE_SVG + '0 drzew';
+        $treeEstimate.innerHTML = '<span style="font-size: 1.5rem;">' + TREE_EMOJI + '</span> 0 drzew';
         $costPB95.textContent = '0.00 zł';
         $costON.textContent = '0.00 zł';
         $costLPG.textContent = '0.00 zł';
@@ -226,7 +226,7 @@ function calculate() {
         $treeEstimate.style.color = 'var(--color-red)';
     }
 
-    $treeEstimate.innerHTML = TREE_SVG + trees.toLocaleString() + ' drzew';
+    $treeEstimate.innerHTML = '<span style="font-size: 1.5rem;">' + TREE_EMOJI + '</span> ' + trees.toLocaleString() + ' drzew';
     
     $costPB95.textContent = costPB95.toFixed(2) + ' zł';
     $costON.textContent = costON.toFixed(2) + ' zł';
@@ -371,7 +371,7 @@ function generateShareData() {
     const cost = $costValue.textContent;
     const liters = $litersValue.textContent;
     const co2 = $co2Value.textContent;
-    const trees = $treeEstimate.textContent.replace(TREE_SVG, '').trim();
+    const trees = $treeEstimate.textContent.replace(TREE_EMOJI, '').trim();
     const url = window.location.href;
 
     const text = `
