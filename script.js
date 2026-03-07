@@ -821,10 +821,10 @@ function savePricesToCache(prices, source, date) {
 
 /**
  * Główna funkcja pobierająca ceny paliw
- * Pokazuje ceny NATYCHMIAST (z cache lub domyślne), potem aktualizuje w tle
+ * Pokazuje ceny NATYCHMIAST, fetch w tle nie blokuje UI
  */
 async function fetchFuelPrices() {
-    // KROK 1: Pokaż ceny od razu (z cache lub domyślne)
+    // KROK 1: Pokaż ceny od razu (z cache lub domyślne) - BEZ "ładowania"
     const cached = loadPricesFromCache();
     
     if (cached) {
@@ -835,32 +835,40 @@ async function fetchFuelPrices() {
             <div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">
                 PB95: ${fuelPrices.PB95} zł | ON: ${fuelPrices.ON} zł | LPG: ${fuelPrices.LPG} zł
             </div>
-            <div style="font-size: 0.75em; margin-top: 3px; opacity: 0.6;">
-                🔄 Sprawdzam aktualne ceny...
-            </div>
         `;
         $priceInfo.classList.add('price-source--success');
     } else {
-        // Brak cache - użyj domyślnych od razu
+        // Brak cache - użyj domyślnych od razu, BEZ komunikatu "ładowanie"
         fuelPrices = { ...DEFAULT_PRICES };
         $priceInfo.innerHTML = `
-            <div>⏳ <b>Ładowanie cen...</b></div>
+            <div>📊 <b>Ceny domyślne</b></div>
             <div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">
-                Tymczasowo: PB95: ${fuelPrices.PB95} zł | ON: ${fuelPrices.ON} zł | LPG: ${fuelPrices.LPG} zł
+                PB95: ${fuelPrices.PB95} zł | ON: ${fuelPrices.ON} zł | LPG: ${fuelPrices.LPG} zł
+            </div>
+            <div style="font-size: 0.75em; margin-top: 3px; opacity: 0.6;">
+                🔄 Aktualizuję w tle...
             </div>
         `;
+        $priceInfo.classList.add('price-source--success');
     }
     
     // Przelicz od razu z dostępnymi cenami
     updatePriceSection();
     calculate();
     
-    // KROK 2: W tle pobierz nowe ceny z API
+    // KROK 2: W tle pobierz nowe ceny (nie blokuj UI!)
+    fetchPricesInBackground();
+}
+
+/**
+ * Pobiera ceny w tle - nie blokuje UI
+ */
+async function fetchPricesInBackground() {
     try {
         const response = await fetch(FUEL_PRICES_API, {
             method: 'GET',
             headers: { 'Accept': 'application/json' },
-            signal: AbortSignal.timeout(6000) // 6s timeout
+            signal: AbortSignal.timeout(5000) // 5s timeout
         });
         
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -892,7 +900,6 @@ async function fetchFuelPrices() {
                     Współczynniki: ON ×${CONSUMPTION_FACTORS.ON}, LPG ×${CONSUMPTION_FACTORS.LPG}
                 </div>
             `;
-            $priceInfo.classList.add('price-source--success');
             
             console.log('Ceny zaktualizowane:', fuelPrices, 'Źródło:', source);
             
@@ -901,17 +908,9 @@ async function fetchFuelPrices() {
             calculate();
         }
     } catch (error) {
-        console.error('Błąd pobierania cen:', error);
-        // Nie zmieniaj nic - użytkownik ma już ceny (cache lub domyślne)
-        if (!cached) {
-            $priceInfo.innerHTML = `
-                <div>⚠️ <b>Brak aktualnych cen.</b> Używam domyślnych.</div>
-                <div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">
-                    PB95: ${fuelPrices.PB95} zł/l | ON: ${fuelPrices.ON} zł/l | LPG: ${fuelPrices.LPG} zł/l
-                </div>
-            `;
-            $priceInfo.classList.add('price-source--error');
-        }
+        console.log('Aktualizacja cen w tle nieudana (niekrytyczne):', error.message);
+        // Cicho ignoruj błąd - użytkownik ma już ceny (cache lub domyślne)
+        // Nie zmieniamy wyświetlanego komunikatu
     }
 }
 
