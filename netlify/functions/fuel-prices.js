@@ -130,6 +130,68 @@ async function fetchFromEPetrol() {
 
 
 /**
+ * Pobiera ceny z AutoCentrum.pl (backend - bez CORS!)
+ * Struktura: <h3 class="fuel-header">95</h3> <div class="price"> 5,95 <span>zł</span> </div>
+ */
+async function fetchFromAutoCentrum() {
+  try {
+    console.log('Próba pobrania z autocentrum.pl...');
+    const url = 'https://www.autocentrum.pl/paliwa/ceny-paliw/';
+    const response = await fetchWithTimeout(url);
+    
+    if (!response.ok) {
+      console.error(`AutoCentrum HTTP error: ${response.status}`);
+      throw new Error(`HTTP ${response.status}`);
+    }
+    
+    const html = await response.text();
+    console.log(`AutoCentrum HTML length: ${html.length}`);
+    
+    const prices = {};
+    
+    // Szukamy bloków: <h3...>NAZWA</h3> <div class="price"> CENA <span>zł</span> </div>
+    // PB95 - szukamy "95" w h3, a potem ceny w div.price
+    const pb95Match = html.match(/<h3[^>]*>\s*95\s*<\/h3>\s*<div[^>]*class="price"[^>]*>\s*([\d,]+)/i);
+    if (pb95Match) {
+      prices.PB95 = parseFloat(pb95Match[1].replace(',', '.'));
+      console.log(`AutoCentrum PB95 found: ${prices.PB95}`);
+    }
+    
+    // ON - szukamy "ON" w h3
+    const onMatch = html.match(/<h3[^>]*>\s*ON\s*<\/h3>\s*<div[^>]*class="price"[^>]*>\s*([\d,]+)/i);
+    if (onMatch) {
+      prices.ON = parseFloat(onMatch[1].replace(',', '.'));
+      console.log(`AutoCentrum ON found: ${prices.ON}`);
+    }
+    
+    // LPG - szukamy "LPG" w h3
+    const lpgMatch = html.match(/<h3[^>]*>\s*LPG\s*<\/h3>\s*<div[^>]*class="price"[^>]*>\s*([\d,]+)/i);
+    if (lpgMatch) {
+      prices.LPG = parseFloat(lpgMatch[1].replace(',', '.'));
+      console.log(`AutoCentrum LPG found: ${prices.LPG}`);
+    }
+    
+    if (prices.PB95 && prices.ON && prices.PB95 > 3 && prices.PB95 < 20 && prices.ON > 3 && prices.ON < 20) {
+      console.log('AutoCentrum SUCCESS:', prices);
+      return {
+        source: 'AutoCentrum.pl',
+        PB95: prices.PB95,
+        ON: prices.ON,
+        LPG: prices.LPG || 3.15,
+        date: new Date().toISOString().split('T')[0]
+      };
+    }
+    
+    console.error('AutoCentrum: Ceny nie znalezione lub nieprawidłowe');
+    return null;
+    
+  } catch (error) {
+    console.error('AutoCentrum fetch error:', error.message);
+    return null;
+  }
+}
+
+/**
  * Pobiera ceny z GlobalPetrolPrices.com (backup - dane światowe dla Polski)
  */
 async function fetchFromGlobalPetrolPrices() {
@@ -255,18 +317,25 @@ exports.handler = async (event, context) => {
     let prices = null;
     let attempts = [];
     
-    // Strategia 1: E-petrol (najlepsze dla Polski)
+    // Strategia 1: E-petrol.pl
     prices = await fetchFromEPetrol();
     attempts.push({ source: 'e-petrol.pl', success: !!prices });
     
-    // Strategia 2: Orlen API
+    // Strategia 2: AutoCentrum.pl
     if (!prices) {
-      console.log('E-petrol failed, trying Orlen...');
+      console.log('E-petrol failed, trying AutoCentrum...');
+      prices = await fetchFromAutoCentrum();
+      attempts.push({ source: 'autocentrum.pl', success: !!prices });
+    }
+    
+    // Strategia 3: Orlen API
+    if (!prices) {
+      console.log('AutoCentrum failed, trying Orlen...');
       prices = await fetchFromOrlen();
       attempts.push({ source: 'Orlen API', success: !!prices });
     }
     
-    // Strategia 3: GlobalPetrolPrices
+    // Strategia 4: GlobalPetrolPrices
     if (!prices) {
       console.log('Orlen failed, trying GlobalPetrolPrices...');
       prices = await fetchFromGlobalPetrolPrices();
