@@ -773,81 +773,98 @@ async function fetchFromOrlen() {
 
 /**
  * Główna funkcja pobierająca ceny paliw
- * Próbuje różnych źródeł w kolejności
+ * Pokazuje ceny NATYCHMIAST (z cache lub domyślne), potem aktualizuje w tle
  */
 async function fetchFuelPrices() {
-    $priceInfo.textContent = 'Ładowanie aktualnych cen paliw...';
-    $priceInfo.className = 'price-source';
-
-    let prices = null;
-    let source = '';
-    let updateDate = '';
-
-    // Strategia 1: AutoCentrum.pl (SPRAWDZONE - działa!)
-    console.log('Próba pobrania cen z AutoCentrum.pl...');
-    prices = await fetchFromAutoCentrum();
+    // KROK 1: Pokaż ceny od razu (z cache lub domyślne)
+    const cached = loadPricesFromCache();
     
-    // Strategia 2: Orlen API (bezpośrednie - bez proxy)
-    if (!prices || !prices.PB95 || !prices.ON || prices.PB95 === prices.ON) {
-        console.log('AutoCentrum niedostępny lub błędne dane, próba Orlen API...');
-        prices = await fetchFromOrlen();
-    }
-    
-    // Strategia 3: GlobalPetrolPrices (z różnymi proxy)
-    if (!prices || !prices.PB95 || !prices.ON) {
-        console.log('Orlen niedostępny, próba GlobalPetrolPrices.com...');
-        prices = await fetchFromGlobalPetrolPrices();
-    }
-    
-    // Strategia 4: Netlify Function (jeśli istnieje)
-    if (!prices || !prices.PB95 || !prices.ON) {
-        console.log('GlobalPetrolPrices niedostępny, próba Netlify Function...');
-        prices = await fetchFromBackend();
-    }
-    
-    // Strategia 5: Jeśli wszystko zawiedzie, użyj wartości domyślnych
-    if (!prices || !prices.PB95 || !prices.ON) {
-        console.log('Wszystkie API zawiodły, używam cen domyślnych');
-        fuelPrices = { ...DEFAULT_PRICES };
-        
+    if (cached) {
+        // Mamy cache - pokaż od razu
+        fuelPrices = cached.prices;
         $priceInfo.innerHTML = `
-            <div>⚠️ <b>Brak połączenia z API.</b> Używam cen domyślnych.</div>
+            <div>✅ <b>Ceny z cache</b> (${new Date(cached.date).toLocaleDateString('pl-PL')})</div>
             <div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">
-                PB95: ${DEFAULT_PRICES.PB95} zł/l | ON: ${DEFAULT_PRICES.ON} zł/l | LPG: ${DEFAULT_PRICES.LPG} zł/l
+                PB95: ${fuelPrices.PB95} zł | ON: ${fuelPrices.ON} zł | LPG: ${fuelPrices.LPG} zł
             </div>
             <div style="font-size: 0.75em; margin-top: 3px; opacity: 0.6;">
-                Możesz ustawić własne ceny w menu (ikona ☰)
-            </div>
-        `;
-        $priceInfo.classList.add('price-source--error');
-        
-    } else {
-        // Sukces - mamy ceny z API
-        fuelPrices = {
-            PB95: prices.PB95 || DEFAULT_PRICES.PB95,
-            ON: prices.ON || DEFAULT_PRICES.ON,
-            LPG: prices.LPG || DEFAULT_PRICES.LPG
-        };
-        
-        source = prices.source || 'API';
-        updateDate = prices.date ? new Date(prices.date).toLocaleDateString('pl-PL') : 'dziś';
-        
-        $priceInfo.innerHTML = `
-            <div>✅ <b>Ceny aktualne</b> (${updateDate})</div>
-            <div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">
-                Źródło: ${source} | PB95: ${fuelPrices.PB95} zł | ON: ${fuelPrices.ON} zł | LPG: ${fuelPrices.LPG} zł
-            </div>
-            <div style="font-size: 0.75em; margin-top: 3px; opacity: 0.6;">
-                Współczynniki: ON ×${CONSUMPTION_FACTORS.ON}, LPG ×${CONSUMPTION_FACTORS.LPG}
+                🔄 Sprawdzam aktualne ceny...
             </div>
         `;
         $priceInfo.classList.add('price-source--success');
+    } else {
+        // Brak cache - użyj domyślnych od razu
+        fuelPrices = { ...DEFAULT_PRICES };
+        $priceInfo.innerHTML = `
+            <div>⏳ <b>Ładowanie cen...</b></div>
+            <div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">
+                Tymczasowo: PB95: ${fuelPrices.PB95} zł | ON: ${fuelPrices.ON} zł | LPG: ${fuelPrices.LPG} zł
+            </div>
+        `;
     }
     
-    // Aktualizuj sekcję aktualnych cen (jeśli istnieje)
+    // Przelicz od razu z dostępnymi cenami
     updatePriceSection();
-    
     calculate();
+    
+    // KROK 2: W tle pobierz nowe ceny z API
+    try {
+        const response = await fetch(FUEL_PRICES_API, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+            signal: AbortSignal.timeout(6000) // 6s timeout
+        });
+        
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const data = await response.json();
+        
+        if (data.success && data.prices) {
+            // Nowe ceny pobrane!
+            fuelPrices = {
+                PB95: data.prices.PB95 || DEFAULT_PRICES.PB95,
+                ON: data.prices.ON || DEFAULT_PRICES.ON,
+                LPG: data.prices.LPG || DEFAULT_PRICES.LPG
+            };
+            
+            // Zapisz do cache
+            savePricesToCache(fuelPrices, data.source, data.update_date);
+            
+            const source = data.source || 'API';
+            const updateDate = data.update_date 
+                ? new Date(data.update_date).toLocaleDateString('pl-PL') 
+                : 'dziś';
+            
+            $priceInfo.innerHTML = `
+                <div>✅ <b>Ceny aktualne</b> (${updateDate})</div>
+                <div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">
+                    Źródło: ${source} | PB95: ${fuelPrices.PB95} zł | ON: ${fuelPrices.ON} zł | LPG: ${fuelPrices.LPG} zł
+                </div>
+                <div style="font-size: 0.75em; margin-top: 3px; opacity: 0.6;">
+                    Współczynniki: ON ×${CONSUMPTION_FACTORS.ON}, LPG ×${CONSUMPTION_FACTORS.LPG}
+                </div>
+            `;
+            $priceInfo.classList.add('price-source--success');
+            
+            console.log('Ceny zaktualizowane:', fuelPrices, 'Źródło:', source);
+            
+            // Przelicz z nowymi cenami
+            updatePriceSection();
+            calculate();
+        }
+    } catch (error) {
+        console.error('Błąd pobierania cen:', error);
+        // Nie zmieniaj nic - użytkownik ma już ceny (cache lub domyślne)
+        if (!cached) {
+            $priceInfo.innerHTML = `
+                <div>⚠️ <b>Brak aktualnych cen.</b> Używam domyślnych.</div>
+                <div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">
+                    PB95: ${fuelPrices.PB95} zł/l | ON: ${fuelPrices.ON} zł/l | LPG: ${fuelPrices.LPG} zł/l
+                </div>
+            `;
+            $priceInfo.classList.add('price-source--error');
+        }
+    }
 }
 
 /**
@@ -912,6 +929,9 @@ function loadFromURL() {
     
     if (consumption && !isNaN(consumption)) {
         $consumption.value = consumption;
+    } else {
+        // Domyślne spalanie 7.5 l/100km
+        $consumption.value = '7.5';
     }
     
     if (fuel && ['PB95', 'ON', 'LPG'].includes(fuel)) {
@@ -930,9 +950,12 @@ function init() {
     // Pobierz aktualne ceny paliw
     fetchFuelPrices();
 
+    // Event listenery dla inputów (input + change dla pewności)
     const inputs = [$distance, $consumption];
     inputs.forEach(input => {
         input.addEventListener('input', calculate);
+        input.addEventListener('change', calculate);
+        input.addEventListener('keyup', calculate);
     });
 
     $menuButton.addEventListener('click', toggleMenu);
@@ -982,6 +1005,9 @@ function init() {
     
     // Inicjalizacja sekcji cen
     updatePriceSection();
+    
+    // Przelicz od razu (z domyślnymi wartościami)
+    calculate();
     
     // Odśwież ceny co 30 minut
     setInterval(fetchFuelPrices, 30 * 60 * 1000);
