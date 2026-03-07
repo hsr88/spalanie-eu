@@ -19,7 +19,7 @@
 # Przekierowania i rewrites
 [[redirects]]
   from = "/api/fuel-prices"
-  to = "/.netlify/functions/fuel-prices.js"
+  to = "/.netlify/functions/fuel-prices"
   status = 200
 
 # Headers dla cache i CORS
