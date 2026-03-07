@@ -178,6 +178,25 @@
                         <span class="input-hint">Średnie spalanie twojego auta</span>
                     </div>
 
+                    <!-- Wybór paliwa -->
+                    <div class="input-group fuel-selector">
+                        <label>⛽ Rodzaj paliwa</label>
+                        <div class="fuel-options-inline">
+                            <label class="fuel-option-inline">
+                                <input type="radio" name="mainFuel" value="PB95" checked>
+                                <span>PB95</span>
+                            </label>
+                            <label class="fuel-option-inline">
+                                <input type="radio" name="mainFuel" value="ON">
+                                <span>ON (Diesel)</span>
+                            </label>
+                            <label class="fuel-option-inline">
+                                <input type="radio" name="mainFuel" value="LPG">
+                                <span>LPG</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="price-info" id="priceInfo">
                         Ładowanie aktualnych cen paliw...
                     </div>
@@ -221,17 +240,17 @@
                 <h3>💰 Porównanie kosztów dla różnych paliw</h3>
                 <div class="comparison-grid">
                     <div class="fuel-option">
-                        <div class="fuel-icon">⛽</div>
-                        <div class="fuel-name">PB95</div>
-                        <div class="fuel-price" id="pricePerLiterPB95">- zł/l</div>
-                        <div class="fuel-cost" id="costPB95">0.00 zł</div>
-                    </div>
-                    <div class="fuel-option recommended">
-                        <div class="fuel-badge">Najpopularniejsze</div>
                         <div class="fuel-icon">🛢️</div>
                         <div class="fuel-name">ON (Diesel)</div>
                         <div class="fuel-price" id="pricePerLiterON">- zł/l</div>
                         <div class="fuel-cost" id="costON">0.00 zł</div>
+                    </div>
+                    <div class="fuel-option recommended">
+                        <div class="fuel-badge">Najpopularniejsze</div>
+                        <div class="fuel-icon">⛽</div>
+                        <div class="fuel-name">PB95</div>
+                        <div class="fuel-price" id="pricePerLiterPB95">- zł/l</div>
+                        <div class="fuel-cost" id="costPB95">0.00 zł</div>
                     </div>
                     <div class="fuel-option">
                         <div class="fuel-icon">🔥</div>

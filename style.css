@@ -362,6 +362,47 @@ ul {
     display: block;
 }
 
+/* Fuel Selector Inline */
+.fuel-selector {
+    margin-top: 1rem;
+}
+
+.fuel-options-inline {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.fuel-option-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: var(--white);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9375rem;
+    font-weight: 500;
+}
+
+.fuel-option-inline:hover {
+    border-color: var(--primary-light);
+}
+
+.fuel-option-inline input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+    margin: 0;
+}
+
+.fuel-option-inline:has(input:checked) {
+    border-color: var(--primary);
+    background: rgba(59, 130, 246, 0.05);
+}
+
 .price-info {
     padding: 1rem;
     background: var(--white);

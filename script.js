@@ -35,6 +35,11 @@ const MARGIN_FACTOR = 1.4; // 1.4 do przeliczenia hurt → detal
 const DEFAULT_FUEL_KEY = 'defaultFuelPreference';
 let defaultFuel = localStorage.getItem(DEFAULT_FUEL_KEY) || 'PB95';
 
+// Ustaw domyślne paliwo w radio buttonach przy starcie
+document.querySelectorAll('input[name="mainFuel"]').forEach(radio => {
+    radio.checked = (radio.value === defaultFuel);
+});
+
 // Nowe: niestandardowe ceny zapisane w localStorage
 const CUSTOM_PRICES_KEY = 'customFuelPrices';
 let customPrices = JSON.parse(localStorage.getItem(CUSTOM_PRICES_KEY)) || {};
@@ -1034,6 +1039,18 @@ function init() {
             document.querySelector('.nav-links')?.classList.toggle('mobile-open');
         });
     }
+    
+    // Główny wybór paliwa (w kalkulatorze)
+    const mainFuelRadios = document.querySelectorAll('input[name="mainFuel"]');
+    mainFuelRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                defaultFuel = this.value;
+                localStorage.setItem(DEFAULT_FUEL_KEY, defaultFuel);
+                calculate();
+            }
+        });
+    });
     
     // Smooth scroll dla linków kotwiczących
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
