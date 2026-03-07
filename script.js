@@ -925,6 +925,9 @@ function loadFromURL() {
     
     if (distance && !isNaN(distance)) {
         $distance.value = distance;
+    } else {
+        // Domyślny dystans 100 km
+        $distance.value = '100';
     }
     
     if (consumption && !isNaN(consumption)) {
