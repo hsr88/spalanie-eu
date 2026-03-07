@@ -772,6 +772,49 @@ async function fetchFromOrlen() {
 }
 
 /**
+ * Ładuje ceny z cache (localStorage)
+ */
+function loadPricesFromCache() {
+    try {
+        const cached = localStorage.getItem(FUEL_PRICES_CACHE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            const age = Date.now() - data.timestamp;
+            
+            // Cache ważny przez 24h
+            if (age < FUEL_PRICES_CACHE_TTL && data.prices) {
+                console.log('Ceny załadowane z cache:', data.prices);
+                return {
+                    prices: data.prices,
+                    source: data.source,
+                    date: data.date,
+                    fromCache: true
+                };
+            }
+        }
+    } catch (e) {
+        console.error('Błąd ładowania cache:', e);
+    }
+    return null;
+}
+
+/**
+ * Zapisuje ceny do cache (localStorage)
+ */
+function savePricesToCache(prices, source, date) {
+    try {
+        localStorage.setItem(FUEL_PRICES_CACHE_KEY, JSON.stringify({
+            prices: prices,
+            source: source,
+            date: date,
+            timestamp: Date.now()
+        }));
+    } catch (e) {
+        console.error('Błąd zapisywania cache:', e);
+    }
+}
+
+/**
  * Główna funkcja pobierająca ceny paliw
  * Pokazuje ceny NATYCHMIAST (z cache lub domyślne), potem aktualizuje w tle
  */
