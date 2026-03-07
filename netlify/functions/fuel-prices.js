@@ -317,29 +317,50 @@ exports.handler = async (event, context) => {
     let prices = null;
     let attempts = [];
     
-    // Strategia 1: E-petrol.pl
-    prices = await fetchFromEPetrol();
-    attempts.push({ source: 'e-petrol.pl', success: !!prices });
+    // Pobieramy z wszystkich źródeł RÓWNOLEGLE (szybciej!)
+    // Każde źródło ma 3 sekundy timeout
+    const sources = [
+      { name: 'e-petrol.pl', fn: fetchFromEPetrol },
+      { name: 'autocentrum.pl', fn: fetchFromAutoCentrum },
+      { name: 'orlen.pl', fn: fetchFromOrlen },
+      { name: 'globalpetrolprices.com', fn: fetchFromGlobalPetrolPrices }
+    ];
     
-    // Strategia 2: AutoCentrum.pl
-    if (!prices) {
-      console.log('E-petrol failed, trying AutoCentrum...');
-      prices = await fetchFromAutoCentrum();
-      attempts.push({ source: 'autocentrum.pl', success: !!prices });
-    }
+    // Uruchamiamy wszystkie źródła równolegle
+    const promises = sources.map(async (source) => {
+      try {
+        const result = await source.fn();
+        return { source: source.name, result, success: !!result };
+      } catch (e) {
+        return { source: source.name, result: null, success: false };
+      }
+    });
     
-    // Strategia 3: Orlen API
-    if (!prices) {
-      console.log('AutoCentrum failed, trying Orlen...');
-      prices = await fetchFromOrlen();
-      attempts.push({ source: 'Orlen API', success: !!prices });
-    }
+    // Czekamy na PIERWSZY udany wynik (z max 5 sekund timeout)
+    let winner = null;
+    const racePromises = promises.map(p => 
+      p.then(r => {
+        if (r.success && !winner) {
+          winner = r;
+        }
+        return r;
+      })
+    );
     
-    // Strategia 4: GlobalPetrolPrices
-    if (!prices) {
-      console.log('Orlen failed, trying GlobalPetrolPrices...');
-      prices = await fetchFromGlobalPetrolPrices();
-      attempts.push({ source: 'GlobalPetrolPrices', success: !!prices });
+    // Czekamy max 5 sekund na cokolwiek
+    await Promise.race([
+      Promise.all(racePromises),
+      new Promise(resolve => setTimeout(resolve, 5000))
+    ]);
+    
+    // Zbieramy wszystkie wyniki
+    const results = await Promise.all(promises);
+    results.forEach(r => attempts.push({ source: r.source, success: r.success }));
+    
+    // Bierzemy pierwszy udany
+    const successful = results.find(r => r.success);
+    if (successful) {
+      prices = successful.result;
     }
     
     // Strategia 4: Domyślne ceny

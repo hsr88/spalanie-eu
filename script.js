@@ -19,17 +19,12 @@ const CONSUMPTION_FACTORS = {
 // Aktualne ceny paliw (zostaną zaktualizowane przez API/Custom)
 let fuelPrices = { ...DEFAULT_PRICES };
 
-// NOWE API - Alternatywne źródła danych o cenach paliw
-const FUEL_PRICE_SOURCES = {
-    // Netlify Function (dla hostingu na Netlify)
-    BACKEND: '/.netlify/functions/fuel-prices',
-    
-    // Alternatywnie możesz użyć pełnego URL:
-    // BACKEND: 'https://spalanie.eu/.netlify/functions/fuel-prices',
-    
-    // Orlen (poprzednie API - jako backup)
-    ORLEN: 'https://api.allorigins.win/raw?url=https://api.orlen.pl/api/fuelprices/wholesale'
-};
+// Cache cen paliw w localStorage
+const FUEL_PRICES_CACHE_KEY = 'fuelPricesCache';
+const FUEL_PRICES_CACHE_TTL = 24 * 60 * 60 * 1000; // 24h w ms
+
+// URL do backendu pobierającego ceny paliw
+const FUEL_PRICES_API = '/.netlify/functions/fuel-prices';
 
 // Stałe obliczeniowe
 const CO2_PER_LITER_PB95 = 2340; // g CO₂/l dla benzyny
