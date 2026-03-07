@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags - WYPEŁNIJ DLA KAŻDEGO ARTYKUŁU -->
+    <title>TYTUŁ ARTYKUŁU | Blog Spalanie.eu</title>
+    <meta name="description" content="OPIS ARTYKUŁU - 150-160 znaków dla SEO">
+    <meta name="keywords" content="słowa, kluczowe, po, przecinku">
+    <meta name="author" content="Spalanie.eu">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://spalanie.eu/blog/NAZWA-ARTYKULU/">
+    <meta property="og:title" content="TYTUŁ ARTYKUŁU">
+    <meta property="og:description" content="OPIS ARTYKUŁU">
+    <meta property="og:image" content="https://spalanie.eu/blog/img/NAZWA-OBRAZKA.jpg">
+    <meta property="article:published_time" content="2025-03-07T12:00:00+01:00">
+    <meta property="article:author" content="Spalanie.eu">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://spalanie.eu/blog/NAZWA-ARTYKULU/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
+    
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* Dodatkowe style dla bloga */
+        .article-page {
+            padding-top: calc(var(--header-height) + 2rem);
+        }
+        
+        .article-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .article-category {
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .article-header h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        
+        .article-image {
+            width: 100%;
+            max-width: 900px;
+            height: 400px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-xl);
+            margin: 0 auto 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+        }
+        
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.125rem;
+            line-height: 1.8;
+        }
+        
+        .article-content h2 {
+            font-size: 1.75rem;
+            margin: 2.5rem 0 1rem;
+            color: var(--gray-900);
+        }
+        
+        .article-content h3 {
+            font-size: 1.375rem;
+            margin: 2rem 0 0.75rem;
+            color: var(--gray-800);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.5rem;
+            color: var(--gray-600);
+        }
+        
+        .article-content ul, .article-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: var(--gray-600);
+        }
+        
+        .article-content ul li {
+            list-style: disc;
+        }
+        
+        .article-content ol li {
+            list-style: decimal;
+        }
+        
+        .article-content strong {
+            color: var(--gray-900);
+        }
+        
+        .highlight-box {
+            background: var(--gray-50);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+        
+        .calculator-embed {
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .calculator-embed h3 {
+            margin-bottom: 1rem;
+        }
+        
+        .cta-box-article {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            margin: 3rem 0;
+            text-align: center;
+        }
+        
+        .cta-box-article h3 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .author-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            margin: 3rem 0;
+        }
+        
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .author-info h4 {
+            margin-bottom: 0.25rem;
+        }
+        
+        .author-info p {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin: 0;
+        }
+        
+        .related-articles {
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        .related-articles h3 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+        
+        .share-btn {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .share-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .share-facebook { background: #1877f2; color: white; }
+        .share-twitter { background: #1da1f2; color: white; }
+        .share-linkedin { background: #0a66c2; color: white; }
+        
+        @media (max-width: 768px) {
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-image {
+                height: 250px;
+                font-size: 4rem;
+            }
+            
+            .article-content {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <a href="/" class="logo">
+                <span class="logo-icon">⛽</span>
+                <span class="logo-text">Spalanie<span class="highlight">.eu</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/">Strona główna</a></li>
+                <li><a href="/#kalkulator">Kalkulator</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/#faq">FAQ</a></li>
+            </ul>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
+        </div>
+    </nav>
+
+    <article class="article-page">
+        <div class="container">
+            <header class="article-header">
+                <div class="article-meta">
+                    <span class="article-category">KATEGORIA</span>
+                    <span>•</span>
+                    <time datetime="2025-03-07">7 marca 2025</time>
+                    <span>•</span>
+                    <span>Czas czytania: 5 min</span>
+                </div>
+                <h1>Tytuł artykułu - przykładowy nagłówek H1</h1>
+                <p class="article-excerpt">
+                    Krótki wstęp do artykułu który pojawi się w wynikach wyszukiwania i na liście artykułów. 
+                    Powinien zachęcać do przeczytania całości.
+                </p>
+            </header>
+
+            <div class="article-image">📝</div>
+
+            <div class="article-content">
+                <!-- Wstęp -->
+                <p>
+                    <strong>Wstęp do artykułu.</strong> Tutaj rozpisujemy o czym będzie artykuł, 
+                    dlaczego to ważne dla czytelnika i co z niego wyniesie.
+                </p>
+
+                <!-- Spis treści (opcjonalnie dla długich artykułów) -->
+                <div class="highlight-box">
+                    <strong>Spis treści:</strong>
+                    <ol>
+                        <li><a href="#sekcja-1">Pierwsza sekcja</a></li>
+                        <li><a href="#sekcja-2">Druga sekcja</a></li>
+                        <li><a href="#sekcja-3">Trzecia sekcja</a></li>
+                        <li><a href="#podsumowanie">Podsumowanie</a></li>
+                    </ol>
+                </div>
+
+                <h2 id="sekcja-1">1. Pierwsza sekcja artykułu</h2>
+                
+                <p>
+                    Treść pierwszej sekcji. Możesz używać <strong>pogrubień</strong> dla ważnych informacji,
+                    tworzyć listy punktowane lub numerowane.
+                </p>
+
+                <ul>
+                    <li>Pierwszy punkt listy</li>
+                    <li>Drugi punkt listy</li>
+                    <li>Trzeci punkt listy</li>
+                </ul>
+
+                <h3>Podsekcja z dodatkowymi szczegółami</h3>
+
+                <p>
+                    Treść podsekcji. Im więcej szczegółów i wartościowych informacji, 
+                    tym lepiej dla SEO i czytelnika.
+                </p>
+
+                <!-- Wbudowany kalkulator -->
+                <div class="calculator-embed">
+                    <h3>🧮 Sprawdź sam w naszym kalkulatorze</h3>
+                    <p>Oblicz koszt swojej podróży w 10 sekund</p>
+                    <a href="/#kalkulator" class="btn btn-primary">Przejdź do kalkulatora →</a>
+                </div>
+
+                <h2 id="sekcja-2">2. Druga sekcja artykułu</h2>
+
+                <p>
+                    Kolejna część artykułu. Dobrze jest używać nagłówków H2 co 300-500 słów
+                    dla lepszej czytelności i SEO.
+                </p>
+
+                <div class="highlight-box">
+                    <strong>💡 Ciekawostka:</strong>
+                    Możesz używać takich wyróżnionych boxów dla ważnych informacji, 
+                    ciekawostek lub ostrzeżeń.
+                </div>
+
+                <h2 id="sekcja-3">3. Trzecia sekcja z przykładowymi danymi</h2>
+
+                <p>
+                    Artykuły z tabelami i danymi są lepiej oceniane przez Google:
+                </p>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: var(--gray-100);">
+                            <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--gray-200);">Parametr</th>
+                            <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--gray-200);">Wartość</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--gray-200);">Przykład 1</td>
+                            <td style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--gray-200);">100 zł</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--gray-200);">Przykład 2</td>
+                            <td style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--gray-200);">150 zł</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 id="podsumowanie">Podsumowanie</h2>
+
+                <p>
+                    Podsumowanie najważniejszych punktów z artykułu. Powtórz kluczowe informacje
+                    i zachęć do działania (CTA).
+                </p>
+
+                <!-- CTA w artykule -->
+                <div class="cta-box-article">
+                    <h3>Gotowy do kalkulacji?</h3>
+                    <p>Oblicz koszt swojej podróży z aktualnymi cenami paliw</p>
+                    <a href="/#kalkulator" class="btn btn-large" style="background: white; color: var(--primary);">
+                        🧮 Otwórz kalkulator
+                    </a>
+                </div>
+
+                <!-- Przyciski udostępniania -->
+                <div class="share-buttons">
+                    <span style="margin-right: 0.5rem; color: var(--gray-500);">Udostępnij:</span>
+                    <button class="share-btn share-facebook" onclick="shareFacebook()">Facebook</button>
+                    <button class="share-btn share-twitter" onclick="shareTwitter()">Twitter</button>
+                    <button class="share-btn share-linkedin" onclick="shareLinkedIn()">LinkedIn</button>
+                </div>
+
+                <!-- Autor -->
+                <div class="author-box">
+                    <div class="author-avatar">✍️</div>
+                    <div class="author-info">
+                        <h4>Zespół Spalanie.eu</h4>
+                        <p>Eksperci od kosztów podróży i ekologii. Tworzymy narzędzia które pomagają kierowcom oszczędzać i dbać o środowisko.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Powiązane artykuły -->
+            <div class="related-articles">
+                <h3>📚 Przeczytaj również</h3>
+                <div class="articles-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <article class="article-card">
+                        <div class="article-image" style="height: 150px;">
+                            <div class="article-placeholder">🛣️</div>
+                        </div>
+                        <div class="article-content" style="padding: 1rem;">
+                            <span class="article-category">Koszty podróży</span>
+                            <h3 style="font-size: 1rem;">Ile kosztuje przejazd Warszawa - Kraków?</h3>
+                            <a href="koszt-warszawa-krakow/" class="article-link">Czytaj →</a>
+                        </div>
+                    </article>
+
+                    <article class="article-card">
+                        <div class="article-image" style="height: 150px;">
+                            <div class="article-placeholder">⛽</div>
+                        </div>
+                        <div class="article-content" style="padding: 1rem;">
+                            <span class="article-category">Oszczędzanie</span>
+                            <h3 style="font-size: 1rem;">10 sposobów na niższe spalanie</h3>
+                            <a href="10-sposobow-oszczedzanie-paliwa/" class="article-link">Czytaj →</a>
+                        </div>
+                    </article>
+
+                    <article class="article-card">
+                        <div class="article-image" style="height: 150px;">
+                            <div class="article-placeholder">🌳</div>
+                        </div>
+                        <div class="article-content" style="padding: 1rem;">
+                            <span class="article-category">Ekologia</span>
+                            <h3 style="font-size: 1rem;">Emisja CO₂ z samochodu - fakty</h3>
+                            <a href="emisja-co2-samochod/" class="article-link">Czytaj →</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- CTA Section -->
+    <section class="cta-section" style="margin-top: 0;">
+        <div class="container">
+            <div class="cta-box">
+                <h2>Zacznij oszczędzać na paliwie</h2>
+                <p>Oblicz koszt swojej podróży w 10 sekund</p>
+                <a href="/#kalkulator" class="btn btn-large btn-primary">🧮 Przejdź do kalkulatora</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <span class="logo-icon">⛽</span>
+                        <span class="logo-text">Spalanie<span class="highlight">.eu</span></span>
+                    </a>
+                    <p>Darmowy kalkulator kosztów podróży samochodem.</p>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Nawigacja</h4>
+                    <ul>
+                        <li><a href="/">Strona główna</a></li>
+                        <li><a href="/#kalkulator">Kalkulator</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Popularne</h4>
+                    <ul>
+                        <li><a href="koszt-warszawa-krakow/">Warszawa - Kraków</a></li>
+                        <li><a href="10-sposobow-oszczedzanie-paliwa/">Oszczędzanie paliwa</a></li>
+                        <li><a href="emisja-co2-samochod/">Emisja CO₂</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Spalanie.eu - Wszelkie prawa zastrzeżone.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Udostępnianie
+        function shareFacebook() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareTwitter() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(document.title);
+            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareLinkedIn() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=600,height=400');
+        }
+
+        // Mobile menu
+        document.querySelector('.mobile-menu-btn')?.addEventListener('click', () => {
+            document.querySelector('.nav-links')?.classList.toggle('mobile-open');
+        });
+    </script>
+</body>
+</html>

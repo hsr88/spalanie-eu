@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO -->
+    <title>Blog | Porady o oszczędzaniu paliwa i kosztach podróży | Spalanie.eu</title>
+    <meta name="description" content="Praktyczne porady jak jeździć taniej i ekologicznie. Kalkulacje kosztów tras, sposoby na niższe spalanie, emisja CO2.">
+    <meta name="keywords" content="blog motoryzacyjny, oszczędzanie paliwa, koszty podróży, emisja CO2, porady dla kierowców">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://spalanie.eu/blog/">
+    <meta property="og:title" content="Blog Spalanie.eu - Porady o kosztach podróży">
+    <meta property="og:description" content="Jak jeździć taniej i ekologicznie? Praktyczne porady i kalkulacje.">
+    
+    <link rel="canonical" href="https://spalanie.eu/blog/">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
+    
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .blog-page {
+            padding-top: calc(var(--header-height) + 2rem);
+        }
+        
+        .blog-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+        
+        .blog-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .blog-categories {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+        
+        .category-btn {
+            padding: 0.5rem 1rem;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .blog-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .blog-card-image {
+            height: 200px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+        
+        .blog-card-content {
+            padding: 1.5rem;
+        }
+        
+        .blog-card-category {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .blog-card h2 {
+            font-size: 1.25rem;
+            margin: 0.5rem 0;
+            line-height: 1.4;
+        }
+        
+        .blog-card h2 a {
+            color: var(--gray-900);
+        }
+        
+        .blog-card h2 a:hover {
+            color: var(--primary);
+        }
+        
+        .blog-card p {
+            color: var(--gray-500);
+            font-size: 0.9375rem;
+            margin-bottom: 1rem;
+        }
+        
+        .blog-card-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--gray-400);
+        }
+        
+        .featured-article {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+        }
+        
+        .featured-image {
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            min-height: 400px;
+        }
+        
+        .featured-content {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .featured-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--gray-900);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            margin-bottom: 1rem;
+            width: fit-content;
+        }
+        
+        .featured-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        
+        .featured-content p {
+            color: var(--gray-500);
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .newsletter-section {
+            background: var(--gray-900);
+            color: var(--white);
+            padding: 4rem 0;
+            margin-top: 4rem;
+        }
+        
+        .newsletter-box {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .newsletter-box h2 {
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter-box p {
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .blog-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .blog-grid,
+            .featured-article {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-image {
+                min-height: 250px;
+            }
+            
+            .featured-content {
+                padding: 1.5rem;
+            }
+            
+            .featured-content h2 {
+                font-size: 1.5rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <a href="/" class="logo">
+                <span class="logo-icon">⛽</span>
+                <span class="logo-text">Spalanie<span class="highlight">.eu</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/">Strona główna</a></li>
+                <li><a href="/#kalkulator">Kalkulator</a></li>
+                <li><a href="/blog/" class="active">Blog</a></li>
+                <li><a href="/#faq">FAQ</a></li>
+            </ul>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
+        </div>
+    </nav>
+
+    <main class="blog-page">
+        <div class="container">
+            <header class="blog-header">
+                <span class="section-tag">📚 Blog</span>
+                <h1>Porady o jeździe i kosztach podróży</h1>
+                <p>Praktyczne wskazówki jak jeździć taniej, oszczędniej i ekologicznie. Sprawdzone kalkulacje i porady.</p>
+            </header>
+
+            <!-- Kategorie -->
+            <div class="blog-categories">
+                <button class="category-btn active">Wszystkie</button>
+                <button class="category-btn">Koszty podróży</button>
+                <button class="category-btn">Oszczędzanie</button>
+                <button class="category-btn">Ekologia</button>
+                <button class="category-btn">Porównania</button>
+            </div>
+
+            <!-- Wyróżniony artykuł -->
+            <article class="featured-article">
+                <div class="featured-image">🛣️</div>
+                <div class="featured-content">
+                    <span class="featured-badge">🔥 Najpopularniejszy</span>
+                    <span class="blog-card-category">Koszty podróży</span>
+                    <h2>Ile kosztuje przejazd Warszawa - Kraków w 2025?</h2>
+                    <p>Szczegółowe obliczenie kosztów najpopularniejszej trasy w Polsce. Porównanie PB95, ON i LPG z aktualnymi cenami.</p>
+                    <a href="koszt-warszawa-krakow/" class="btn btn-primary">Przeczytaj artykuł →</a>
+                </div>
+            </article>
+
+            <!-- Lista artykułów -->
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <div class="blog-card-image">⛽</div>
+                    <div class="blog-card-content">
+                        <span class="blog-card-category">Oszczędzanie</span>
+                        <h2><a href="10-sposobow-oszczedzanie-paliwa/">10 sposobów na niższe spalanie - zaoszczędź 20%!</a></h2>
+                        <p>Proste triki które pomogą Ci zaoszczędzić na paliwie bez utraty komfortu jazdy.</p>
+                        <div class="blog-card-meta">
+                            <span>5 min czytania</span>
+                            <span>7 marca 2025</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-card-image">🌳</div>
+                    <div class="blog-card-content">
+                        <span class="blog-card-category">Ekologia</span>
+                        <h2><a href="emisja-co2-samochod/">Emisja CO₂ z samochodu - fakty i mity</a></h2>
+                        <p>Ile naprawdę emituje Twój samochód? Ile drzew musi wyrosnąć aby zniwelować ten ślad?</p>
+                        <div class="blog-card-meta">
+                            <span>4 min czytania</span>
+                            <span>5 marca 2025</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-card-image">🔥</div>
+                    <div class="blog-card-content">
+                        <span class="blog-card-category">Porównanie</span>
+                        <h2><a href="czy-warto-lpg/">Czy warto jeździć na LPG? Kalkulator opłacalności</a></h2>
+                        <p>Kiedy instalacja gazowa się zwraca? Ile zaoszczędzisz rocznie? Sprawdź nasz kalkulator.</p>
+                        <div class="blog-card-meta">
+                            <span>6 min czytania</span>
+                            <span>3 marca 2025</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-card-image">🚗</div>
+                    <div class="blog-card-content">
+                        <span class="blog-card-category">Wiedza</span>
+                        <h2><a href="jak-obliczyc-spalanie/">Jak prawidłowo obliczyć spalanie samochodu?</a></h2>
+                        <p>Metody pomiaru zużycia paliwa. Tankowanie "do pełna" vs komputer pokładowy - co jest dokładniejsze?</p>
+                        <div class="blog-card-meta">
+                            <span>4 min czytania</span>
+                            <span>28 lutego 2025</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-card-image">⚡</div>
+                    <div class="blog-card-content">
+                        <span class="blog-card-category">Przyszłość</span>
+                        <h2><a href="elektryk-vs-spalinowka/">Elektryk vs spalinówka - pełne koszty posiadania 2025</a></h2>
+                        <p>Porównanie TCO (Total Cost of Ownership). Czy elektryk się opłaca przy obecnych cenach prądu?</p>
+                        <div class="blog-card-meta">
+                            <span>8 min czytania</span>
+                            <span>25 lutego 2025</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-card-image">📊</div>
+                    <div class="blog-card-content">
+                        <span class="blog-card-category">Koszty podróży</span>
+                        <h2><a href="koszty-autostrady-vs-darmowe/">Autostrada czy drogi wojewódzkie? Koszt czasu vs pieniędzy</a></h2>
+                        <p>Kiedy opłaca się jechać autostradą A4, a kiedy drogą wojewódzką? Kompletna analiza.</p>
+                        <div class="blog-card-meta">
+                            <span>5 min czytania</span>
+                            <span>20 lutego 2025</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Paginacja -->
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <button class="btn btn-outline" disabled>← Poprzednie</button>
+                <span style="margin: 0 1rem; color: var(--gray-400);">Strona 1 z 1</span>
+                <button class="btn btn-outline" disabled>Następne →</button>
+            </div>
+        </div>
+
+        <!-- Newsletter -->
+        <section class="newsletter-section">
+            <div class="container">
+                <div class="newsletter-box">
+                    <h2>📧 Zapisz się na porady</h2>
+                    <p>Otrzymuj cotygodniowe porady o oszczędzaniu paliwa i aktualne ceny na stacjach.</p>
+                    <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Dziękujemy za zapisanie się! Funkcja w przygotowaniu.');">
+                        <input type="email" placeholder="Twój adres email" required>
+                        <button type="submit" class="btn btn-primary">Zapisz się</button>
+                    </form>
+                    <p style="font-size: 0.75rem; opacity: 0.6; margin-top: 1rem;">Możesz się wypisać w każdej chwili. Brak spamu.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <span class="logo-icon">⛽</span>
+                        <span class="logo-text">Spalanie<span class="highlight">.eu</span></span>
+                    </a>
+                    <p>Darmowy kalkulator kosztów podróży samochodem.</p>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Nawigacja</h4>
+                    <ul>
+                        <li><a href="/">Strona główna</a></li>
+                        <li><a href="/#kalkulator">Kalkulator</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Kategorie</h4>
+                    <ul>
+                        <li><a href="#">Koszty podróży</a></li>
+                        <li><a href="#">Oszczędzanie paliwa</a></li>
+                        <li><a href="#">Ekologia</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Spalanie.eu - Wszelkie prawa zastrzeżone.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu
+        document.querySelector('.mobile-menu-btn')?.addEventListener('click', () => {
+            document.querySelector('.nav-links')?.classList.toggle('mobile-open');
+        });
+
+        // Filtrowanie kategorii (placeholder)
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
