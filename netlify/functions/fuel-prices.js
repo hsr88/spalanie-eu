@@ -1,17 +1,20 @@
 // netlify/functions/fuel-prices.js
-// Netlify Serverless Function - zamiennik fuel-prices.php
+// Netlify Serverless Function - pobieranie cen paliw z wielu źródeł
 
 const fetch = require('node-fetch');
 
-// Domyślne ceny (fallback) - AKTUALIZUJ TE WARTOŚCI REGULARNIE!
+// Domyślne ceny (fallback) - aktualizowane: 07.03.2026
 const DEFAULT_PRICES = {
-  PB95: 6.89,
-  ON: 6.71,
-  LPG: 3.15
+  PB95: 6.45,
+  ON: 6.38,
+  LPG: 3.25
 };
 
-// Timeout dla requestów (10 sekund)
-const FETCH_TIMEOUT = 10000;
+// Timeout dla requestów (8 sekund)
+const FETCH_TIMEOUT = 8000;
+
+// Walidacja ceny - czy jest w rozsądnym zakresie (3-20 zł)
+const isValidPrice = (price) => price > 3 && price < 20;
 
 /**
  * Fetch z timeoutem
@@ -25,7 +28,9 @@ async function fetchWithTimeout(url, options = {}, timeout = FETCH_TIMEOUT) {
       ...options,
       signal: controller.signal,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7',
         ...options.headers
       }
     });
@@ -38,7 +43,7 @@ async function fetchWithTimeout(url, options = {}, timeout = FETCH_TIMEOUT) {
 }
 
 /**
- * Pobiera ceny z E-petrol.pl (najprostsze do parsowania)
+ * Pobiera ceny z E-petrol.pl
  */
 async function fetchFromEPetrol() {
   try {
@@ -56,11 +61,13 @@ async function fetchFromEPetrol() {
     
     const prices = {};
     
-    // Różne możliwe wzorce dla PB95
+    // Szukamy w tabeli - wzorce dla różnych struktur HTML
+    // Szukamy ceny PB95
     const pb95Patterns = [
-      /pb.*?95.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /benzyna.*?95.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /<td[^>]*>.*?95.*?<\/td>\s*<td[^>]*>(\d+[,\.]\d+)/i
+      /<td[^>]*>\s*95[\s\S]*?<td[^>]*>(\d+[,.]\d+)/i,
+      /<td[^>]*>\s*PB95[\s\S]*?<td[^>]*>(\d+[,.]\d+)/i,
+      /95[\s\S]{0,50}?<td[^>]*>(\d+[,.]\d+)[\s\S]{0,20}?z[łl]/i,
+      /benzyna.*?95[^\d]{0,100}(\d+[,.]\d+)\s*z[łl]/i
     ];
     
     for (const pattern of pb95Patterns) {
@@ -72,12 +79,12 @@ async function fetchFromEPetrol() {
       }
     }
     
-    // Różne możliwe wzorce dla ON
+    // Szukamy ceny ON
     const onPatterns = [
-      /olej.*?napędow.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /diesel.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /\bon\b.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /<td[^>]*>.*?ON.*?<\/td>\s*<td[^>]*>(\d+[,\.]\d+)/i
+      /<td[^>]*>\s*ON[\s\S]*?<td[^>]*>(\d+[,.]\d+)/i,
+      /<td[^>]*>\s*olej[\s\S]*?<td[^>]*>(\d+[,.]\d+)/i,
+      /ON[\s\S]{0,50}?<td[^>]*>(\d+[,.]\d+)[\s\S]{0,20}?z[łl]/i,
+      /olej.*?napędowy[^\d]{0,100}(\d+[,.]\d+)\s*z[łl]/i
     ];
     
     for (const pattern of onPatterns) {
@@ -89,11 +96,11 @@ async function fetchFromEPetrol() {
       }
     }
     
-    // Różne możliwe wzorce dla LPG
+    // Szukamy ceny LPG
     const lpgPatterns = [
-      /lpg.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /gaz.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /<td[^>]*>.*?LPG.*?<\/td>\s*<td[^>]*>(\d+[,\.]\d+)/i
+      /<td[^>]*>\s*LPG[\s\S]*?<td[^>]*>(\d+[,.]\d+)/i,
+      /<td[^>]*>\s*gaz[\s\S]*?<td[^>]*>(\d+[,.]\d+)/i,
+      /LPG[\s\S]{0,50}?<td[^>]*>(\d+[,.]\d+)[\s\S]{0,20}?z[łl]/i
     ];
     
     for (const pattern of lpgPatterns) {
@@ -105,16 +112,13 @@ async function fetchFromEPetrol() {
       }
     }
     
-    // Walidacja cen (czy są w rozsądnym zakresie)
-    const isValidPrice = (price) => price > 2 && price < 15;
-    
-    if (prices.PB95 && prices.ON && isValidPrice(prices.PB95) && isValidPrice(prices.ON)) {
+    if (isValidPrice(prices.PB95) && isValidPrice(prices.ON)) {
       console.log('E-petrol SUCCESS:', prices);
       return {
         source: 'e-petrol.pl',
         PB95: prices.PB95,
         ON: prices.ON,
-        LPG: prices.LPG || 3.15,
+        LPG: prices.LPG || DEFAULT_PRICES.LPG,
         date: new Date().toISOString().split('T')[0]
       };
     }
@@ -128,52 +132,70 @@ async function fetchFromEPetrol() {
   }
 }
 
-
 /**
- * Pobiera ceny z GlobalPetrolPrices.com (backup - dane światowe dla Polski)
+ * Pobiera ceny z AutoCentrum.pl (backend - bez CORS!)
+ * Struktura: <h3 class="fuel-header">95</h3> <div class="price"> 5,95 <span>zł</span> </div>
  */
-async function fetchFromGlobalPetrolPrices() {
+async function fetchFromAutoCentrum() {
   try {
-    console.log('Próba pobrania z GlobalPetrolPrices...');
-    const url = 'https://www.globalpetrolprices.com/Poland/gasoline_prices/';
+    console.log('Próba pobrania z autocentrum.pl...');
+    const url = 'https://www.autocentrum.pl/paliwa/ceny-paliw/';
     const response = await fetchWithTimeout(url);
     
     if (!response.ok) {
-      console.error(`GlobalPetrolPrices HTTP error: ${response.status}`);
+      console.error(`AutoCentrum HTTP error: ${response.status}`);
       throw new Error(`HTTP ${response.status}`);
     }
     
     const html = await response.text();
+    console.log(`AutoCentrum HTML length: ${html.length}`);
     
-    // Szukamy cen w tabeli
-    const priceMatch = html.match(/(\d+\.\d+)\s*PLN/);
+    const prices = {};
     
-    if (priceMatch) {
-      const pb95Price = parseFloat(priceMatch[1]);
-      const onPrice = pb95Price * 0.97; // ON zwykle ~3% taniej
-      
-      console.log('GlobalPetrolPrices SUCCESS:', { PB95: pb95Price, ON: onPrice });
-      
+    // Szukamy bloków: <h3...>NAZWA</h3> <div class="price"> CENA <span>zł</span> </div>
+    // PB95 - szukamy "95" w h3, a potem ceny w div.price
+    const pb95Match = html.match(/<h3[^>]*>\s*95\s*<\/h3>\s*<div[^>]*class="price"[^>]*>\s*([\d,]+)/i);
+    if (pb95Match) {
+      prices.PB95 = parseFloat(pb95Match[1].replace(',', '.'));
+      console.log(`AutoCentrum PB95 found: ${prices.PB95}`);
+    }
+    
+    // ON - szukamy "ON" w h3
+    const onMatch = html.match(/<h3[^>]*>\s*ON\s*<\/h3>\s*<div[^>]*class="price"[^>]*>\s*([\d,]+)/i);
+    if (onMatch) {
+      prices.ON = parseFloat(onMatch[1].replace(',', '.'));
+      console.log(`AutoCentrum ON found: ${prices.ON}`);
+    }
+    
+    // LPG - szukamy "LPG" w h3
+    const lpgMatch = html.match(/<h3[^>]*>\s*LPG\s*<\/h3>\s*<div[^>]*class="price"[^>]*>\s*([\d,]+)/i);
+    if (lpgMatch) {
+      prices.LPG = parseFloat(lpgMatch[1].replace(',', '.'));
+      console.log(`AutoCentrum LPG found: ${prices.LPG}`);
+    }
+    
+    if (isValidPrice(prices.PB95) && isValidPrice(prices.ON)) {
+      console.log('AutoCentrum SUCCESS:', prices);
       return {
-        source: 'GlobalPetrolPrices.com',
-        PB95: pb95Price,
-        ON: onPrice,
-        LPG: 3.15,
+        source: 'AutoCentrum.pl',
+        PB95: prices.PB95,
+        ON: prices.ON,
+        LPG: prices.LPG || DEFAULT_PRICES.LPG,
         date: new Date().toISOString().split('T')[0]
       };
     }
     
-    console.error('GlobalPetrolPrices: Ceny nie znalezione');
+    console.error('AutoCentrum: Ceny nie znalezione lub nieprawidłowe');
     return null;
     
   } catch (error) {
-    console.error('GlobalPetrolPrices fetch error:', error.message);
+    console.error('AutoCentrum fetch error:', error.message);
     return null;
   }
 }
 
 /**
- * Pobiera ceny z Orlen API
+ * Pobiera ceny z Orlen API (hurtowe -> detaliczne)
  */
 async function fetchFromOrlen() {
   try {
@@ -190,38 +212,84 @@ async function fetchFromOrlen() {
     console.log(`Orlen data items: ${data.length}`);
     
     const prices = {};
-    const marginFactor = 1.4;
+    const marginFactor = 1.35; // Marża hurt -> detal
     
     data.forEach(item => {
-      const retailPrice = (item.price / 1000) * marginFactor;
+      const retailPrice = Math.round((item.price / 1000) * marginFactor * 100) / 100;
       
       if (item.productCode === 'B95') {
-        prices.PB95 = Math.round(retailPrice * 100) / 100;
+        prices.PB95 = retailPrice;
         prices.date = item.date;
         console.log(`Orlen PB95 found: ${prices.PB95}`);
       }
       if (item.productCode === 'ON') {
-        prices.ON = Math.round(retailPrice * 100) / 100;
+        prices.ON = retailPrice;
         console.log(`Orlen ON found: ${prices.ON}`);
       }
     });
     
-    if (prices.PB95 && prices.ON) {
+    if (isValidPrice(prices.PB95) && isValidPrice(prices.ON)) {
       console.log('Orlen SUCCESS:', prices);
       return {
         source: 'Orlen.pl (hurt + marża)',
         PB95: prices.PB95,
         ON: prices.ON,
-        LPG: 3.15,
+        LPG: DEFAULT_PRICES.LPG, // Orlen nie podaje LPG w tym API
         date: prices.date || new Date().toISOString().split('T')[0]
       };
     }
     
-    console.error('Orlen: Ceny nie znalezione w danych');
+    console.error('Orlen: Ceny nie znalezione');
     return null;
     
   } catch (error) {
     console.error('Orlen fetch error:', error.message);
+    return null;
+  }
+}
+
+/**
+ * Pobiera ceny z GlobalPetrolPrices.com
+ */
+async function fetchFromGlobalPetrolPrices() {
+  try {
+    console.log('Próba pobrania z GlobalPetrolPrices...');
+    const url = 'https://www.globalpetrolprices.com/Poland/gasoline_prices/';
+    const response = await fetchWithTimeout(url);
+    
+    if (!response.ok) {
+      console.error(`GlobalPetrolPrices HTTP error: ${response.status}`);
+      throw new Error(`HTTP ${response.status}`);
+    }
+    
+    const html = await response.text();
+    
+    // Szukamy ceny w PLN
+    const priceMatch = html.match(/(\d+\.\d+)\s*PLN/i);
+    
+    if (priceMatch) {
+      const pb95Price = parseFloat(priceMatch[1]);
+      
+      if (isValidPrice(pb95Price)) {
+        const onPrice = Math.round(pb95Price * 0.97 * 100) / 100; // ON ~3% taniej
+        
+        console.log('GlobalPetrolPrices SUCCESS:', { PB95: pb95Price, ON: onPrice });
+        
+        return {
+          source: 'GlobalPetrolPrices.com',
+          PB95: pb95Price,
+          ON: onPrice,
+          LPG: DEFAULT_PRICES.LPG,
+          date: new Date().toISOString().split('T')[0]
+        };
+      }
+    }
+    
+    console.error('GlobalPetrolPrices: Ceny nie znalezione');
+    return null;
+    
+  } catch (error) {
+    console.error('GlobalPetrolPrices fetch error:', error.message);
     return null;
   }
 }
@@ -232,6 +300,7 @@ async function fetchFromOrlen() {
 exports.handler = async (event, context) => {
   console.log('=== Fuel Prices Function Started ===');
   console.log(`Method: ${event.httpMethod}`);
+  console.log(`Timestamp: ${new Date().toISOString()}`);
   
   // CORS headers
   const headers = {
@@ -255,25 +324,33 @@ exports.handler = async (event, context) => {
     let prices = null;
     let attempts = [];
     
-    // Strategia 1: E-petrol (najlepsze dla Polski)
+    // Strategia 1: E-petrol.pl
     prices = await fetchFromEPetrol();
     attempts.push({ source: 'e-petrol.pl', success: !!prices });
     
-    // Strategia 2: Orlen API
+    
+    // Strategia 3: AutoCentrum.pl
     if (!prices) {
-      console.log('E-petrol failed, trying Orlen...');
-      prices = await fetchFromOrlen();
-      attempts.push({ source: 'Orlen API', success: !!prices });
+      console.log('E-petrol failed, trying AutoCentrum...');
+      prices = await fetchFromAutoCentrum();
+      attempts.push({ source: 'autocentrum.pl', success: !!prices });
     }
     
-    // Strategia 3: GlobalPetrolPrices
+    // Strategia 4: Orlen API
+    if (!prices) {
+      console.log('AutoCentrum failed, trying Orlen...');
+      prices = await fetchFromOrlen();
+      attempts.push({ source: 'orlen.pl', success: !!prices });
+    }
+    
+    // Strategia 5: GlobalPetrolPrices
     if (!prices) {
       console.log('Orlen failed, trying GlobalPetrolPrices...');
       prices = await fetchFromGlobalPetrolPrices();
-      attempts.push({ source: 'GlobalPetrolPrices', success: !!prices });
+      attempts.push({ source: 'globalpetrolprices.com', success: !!prices });
     }
     
-    // Strategia 4: Domyślne ceny
+    // Fallback: Domyślne ceny
     if (!prices) {
       console.log('All sources failed, using defaults');
       console.log('Attempts:', JSON.stringify(attempts));
@@ -288,7 +365,7 @@ exports.handler = async (event, context) => {
           attempts: attempts,
           prices: DEFAULT_PRICES,
           timestamp: new Date().toISOString(),
-          note: 'Zaktualizuj DEFAULT_PRICES w kodzie lub ustaw własne ceny w menu kalkulatora'
+          note: 'Możesz ustawić własne ceny w menu kalkulatora (☰)'
         })
       };
     }
@@ -320,7 +397,7 @@ exports.handler = async (event, context) => {
     console.error('Stack:', error.stack);
     
     return {
-      statusCode: 200, // Zwracamy 200 żeby frontend dostał fallback
+      statusCode: 200,
       headers,
       body: JSON.stringify({
         success: false,
