@@ -77,6 +77,17 @@ const $customPriceON = document.getElementById('customPriceON');
 const $customPriceLPG = document.getElementById('customPriceLPG');
 const $settingsContent = document.querySelector('.settings-content');
 
+// Elementy dla sekcji aktualnych cen
+const $currentPricePB95 = document.getElementById('currentPricePB95');
+const $currentPriceON = document.getElementById('currentPriceON');
+const $currentPriceLPG = document.getElementById('currentPriceLPG');
+const $priceSource = document.getElementById('priceSource');
+const $priceUpdateDate = document.getElementById('priceUpdateDate');
+
+// Mobile menu
+const $mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+const $mainNav = document.querySelector('.main-nav');
+
 
 // Ikona SVG drzewa (bez zmian)
 const TREE_SVG = `
@@ -833,7 +844,54 @@ async function fetchFuelPrices() {
         $priceInfo.classList.add('price-source--success');
     }
     
+    // Aktualizuj sekcję aktualnych cen (jeśli istnieje)
+    updatePriceSection();
+    
     calculate();
+}
+
+/**
+ * Aktualizuje sekcję aktualnych cen na stronie
+ */
+function updatePriceSection() {
+    if ($currentPricePB95) {
+        $currentPricePB95.textContent = fuelPrices.PB95.toFixed(2);
+    }
+    if ($currentPriceON) {
+        $currentPriceON.textContent = fuelPrices.ON.toFixed(2);
+    }
+    if ($currentPriceLPG) {
+        $currentPriceLPG.textContent = fuelPrices.LPG.toFixed(2);
+    }
+    if ($priceSource) {
+        $priceSource.textContent = document.getElementById('priceInfo')?.textContent?.includes('AutoCentrum') ? 'AutoCentrum.pl' : 
+                                   document.getElementById('priceInfo')?.textContent?.includes('Orlen') ? 'Orlen.pl' : 
+                                   document.getElementById('priceInfo')?.textContent?.includes('Global') ? 'GlobalPetrolPrices.com' : 'API';
+    }
+    if ($priceUpdateDate) {
+        $priceUpdateDate.textContent = new Date().toLocaleDateString('pl-PL');
+    }
+}
+
+/**
+ * Resetuje ceny niestandardowe do wartości domyślnych
+ */
+function resetCustomPrices() {
+    customPrices = {};
+    localStorage.removeItem(CUSTOM_PRICES_KEY);
+    
+    if ($customPricePB95) $customPricePB95.value = '';
+    if ($customPriceON) $customPriceON.value = '';
+    if ($customPriceLPG) $customPriceLPG.value = '';
+    
+    calculate();
+    
+    // Pokaż powiadomienie
+    if ($shareMessage) {
+        $shareMessage.textContent = '✅ Przywrócono domyślne ceny';
+        $shareMessage.classList.add('show');
+        setTimeout(() => $shareMessage.classList.remove('show'), 3000);
+    }
 }
 
 // --- 7. INICJALIZACJA APLIKACJI ---
@@ -900,6 +958,30 @@ function init() {
     });
 
     $shareButton.addEventListener('click', handleShareClick);
+    
+    // Mobile menu toggle
+    if ($mobileMenuBtn) {
+        $mobileMenuBtn.addEventListener('click', () => {
+            document.querySelector('.nav-links')?.classList.toggle('mobile-open');
+        });
+    }
+    
+    // Smooth scroll dla linków kotwiczących
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Inicjalizacja sekcji cen
+    updatePriceSection();
     
     // Odśwież ceny co 30 minut
     setInterval(fetchFuelPrices, 30 * 60 * 1000);

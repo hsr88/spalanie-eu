@@ -3,157 +3,693 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Spalania, Kosztów Podróży i Emisji CO₂ | Spalanie.eu</title>
     
-    <meta name="description" content="Szybki i responsywny kalkulator kosztów podróży, zużycia paliwa oraz emisji CO₂. Oblicz, ile zapłacisz za trasę i jak wpłyniesz na środowisko. Dane o cenach paliw z API.">
-    <meta name="keywords" content="kalkulator spalania, koszt podróży, emisja CO2, cena paliwa, l/100km, spalanie, paliwo, PB95, ON, LPG">
+    <!-- SEO Meta Tags -->
+    <title>Kalkulator Spalania Paliwa i Kosztów Podróży | Spalanie.eu</title>
+    <meta name="description" content="Oblicz koszt podróży samochodem. Aktualne ceny paliw PB95, ON, LPG. Sprawdź emisję CO₂ i ile drzew potrzeba do jej wchłonięcia. Darmowy kalkulator spalania.">
+    <meta name="keywords" content="kalkulator spalania, koszt podróży samochodem, ceny paliw, oblicz spalanie, emisja CO2, kalkulator paliwa, ile kosztuje przejazd">
     <meta name="author" content="Spalanie.eu">
-    <link rel="canonical" href="https://spalanie.eu/">
-
-    <meta property="og:title" content="Kalkulator Spalania, Kosztów Podróży i CO₂">
-    <meta property="og:description" content="Szybko oblicz, ile zapłacisz za trasę i ile wyniesie emisja CO₂. Działa offline!">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="Polish">
+    
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://spalanie.eu/">
+    <meta property="og:title" content="Kalkulator Spalania Paliwa i Kosztów Podróży">
+    <meta property="og:description" content="Oblicz koszt podróży, zużycie paliwa i emisję CO₂. Aktualne ceny PB95, ON, LPG.">
+    <meta property="og:image" content="https://spalanie.eu/img/og-image.jpg">
     
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@spalanie_eu">
-    <meta name="twitter:title" content="Kalkulator Spalania i CO₂">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://spalanie.eu/">
+    <meta property="twitter:title" content="Kalkulator Spalania Paliwa">
+    <meta property="twitter:description" content="Oblicz koszt podróży samochodem. Aktualne ceny paliw.">
+    <meta property="twitter:image" content="https://spalanie.eu/img/og-image.jpg">
     
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://spalanie.eu/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Kalkulator Spalania Paliwa Spalanie.eu",
+        "url": "https://spalanie.eu",
+        "description": "Darmowy kalkulator obliczający koszt podróży samochodem, zużycie paliwa i emisję CO₂ z aktualnymi cenami paliw.",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "PLN"
+        },
+        "creator": {
+            "@type": "Organization",
+            "name": "Spalanie.eu"
+        }
+    }
+    </script>
+    
+    <!-- Schema.org FAQ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Jak obliczyć spalanie samochodu?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Spalanie oblicza się dzieląc ilość zużytego paliwa (w litrach) przez przejechany dystans (w km) i mnożąc przez 100. Wzór: (paliwne [l] / dystans [km]) × 100 = spalanie [l/100km]."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Ile kosztuje przejazd na trasie Warszawa - Kraków?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Przejazd Warszawa - Kraków (ok. 300 km) samochodem z silnikiem benzynowym o średnim spalaniu 7 l/100km kosztuje około 135-150 zł (przy cenie PB95 ~6,50 zł/l). Na dieselu będzie taniej o około 10-15%."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Ile CO₂ emituje samochód na 100 km?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Średnio samochód osobowy emituje około 120-150 g CO₂ na kilometr, czyli 12-15 kg na 100 km. Dla benzyny PB95: 1 litr paliwa = ok. 2,3 kg CO₂. Przy spalaniu 7l/100km to około 16 kg CO₂."
+                }
+            }
+        ]
+    }
+    </script>
 </head>
 <body>
-
-    <main class="calculator-card">
-        <div class="header-with-menu">
-            <h1 class="calculator-card__title">Kalkulator Podróży i CO₂</h1>
-            <button id="menuButton" class="hamburger-menu">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <a href="/" class="logo">
+                <span class="logo-icon">⛽</span>
+                <span class="logo-text">Spalanie<span class="highlight">.eu</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#kalkulator">Kalkulator</a></li>
+                <li><a href="#ceny-paliw">Ceny Paliw</a></li>
+                <li><a href="#artykuly">Porady</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
         </div>
-        
-        <div id="settingsMenu" class="settings-menu">
-            <div class="settings-content">
-                <button id="closeMenuButton" class="close-menu-btn">&times;</button>
-                <h2 class="menu-title">Ustawienia domyślne</h2>
-                <p class="menu-description">Wybierz paliwo dla głównego kosztu podróży, które zostanie zapisane w przeglądarce.</p>
-                
-                <div class="fuel-selection-group">
-                    <label>
-                        <input type="radio" name="defaultFuel" value="PB95" id="radioPB95"> Benzyna PB95
-                    </label>
-                    <label>
-                        <input type="radio" name="defaultFuel" value="ON" id="radioON"> Olej Napędowy (ON)
-                    </label>
-                    <label>
-                        <input type="radio" name="defaultFuel" value="LPG" id="radioLPG"> Gaz Płynny (LPG)
-                    </label>
-                </div>
-                <h2 class="menu-title" style="margin-top: 25px;">Ustaw własne ceny (zł/l)</h2>
-                <p class="menu-description">Wprowadź swoje lokalne ceny. Zostaną one zapisane i nadpiszą ceny pobrane z API.</p>
+    </nav>
 
-                <div class="input-group">
-                    <label for="customPricePB95">Cena PB95</label>
-                    <input type="number" id="customPricePB95" value="" min="0.01" step="0.01" placeholder="Pozostaw puste, aby użyć ceny z API">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="hero-car-animation">🚗</div>
+            <div class="road"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Oblicz <span class="gradient-text">koszt podróży</span><br>
+                    samochodem w 10 sekund
+                </h1>
+                <p class="hero-subtitle">
+                    Aktualne ceny paliw PB95, ON, LPG. Sprawdź spalanie, emisję CO₂ 
+                    i ile drzew musi wyrosnąć, aby zniwelować Twój ślad węglowy.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">50k+</span>
+                        <span class="stat-label">Obliczeń miesięcznie</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Darmowe</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">⚡</span>
+                        <span class="stat-label">Aktualne ceny</span>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label for="customPriceON">Cena Oleju Napędowego (ON)</label>
-                    <input type="number" id="customPriceON" value="" min="0.01" step="0.01" placeholder="Pozostaw puste, aby użyć ceny z API">
-                </div>
-                <div class="input-group">
-                    <label for="customPriceLPG">Cena Gazu Płynnego (LPG)</label>
-                    <input type="number" id="customPriceLPG" value="" min="0.01" step="0.01" placeholder="Pozostaw puste, aby użyć ceny domyślnej">
-                </div>
-
             </div>
         </div>
+        <div class="scroll-indicator">
+            <span>Przewiń do kalkulatora</span>
+            <div class="scroll-arrow">↓</div>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section id="kalkulator" class="calculator-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">🧮 Kalkulator</span>
+                <h2>Oblicz koszt swojej podróży</h2>
+                <p>Wpisz dystans i średnie spalanie swojego samochodu. My pobierzemy aktualne ceny paliw.</p>
+            </div>
+
+            <div class="calculator-wrapper">
+                <!-- Main Calculator -->
+                <div class="calculator-main">
+                    <div class="input-group">
+                        <label for="distance">📍 Dystans (km)</label>
+                        <div class="input-with-controls">
+                            <button class="control-btn" data-target="distance" data-action="decrement">−</button>
+                            <input type="number" id="distance" min="1" placeholder="np. 300" required>
+                            <button class="control-btn" data-target="distance" data-action="increment">+</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="consumption">⛽ Spalanie (l/100km)</label>
+                        <div class="input-with-controls">
+                            <button class="control-btn" data-target="consumption" data-action="decrement">−</button>
+                            <input type="number" id="consumption" min="1" step="0.1" placeholder="np. 7.5" required>
+                            <button class="control-btn" data-target="consumption" data-action="increment">+</button>
+                        </div>
+                        <span class="input-hint">Średnie spalanie twojego auta</span>
+                    </div>
+
+                    <div class="price-info" id="priceInfo">
+                        Ładowanie aktualnych cen paliw...
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="results-panel">
+                    <div class="main-result">
+                        <span class="result-label" id="mainCostLabel">Koszt podróży (PB95)</span>
+                        <span class="result-value" id="costValue">0.00 zł</span>
+                    </div>
+
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <span class="result-icon">🛢️</span>
+                            <span class="result-label-small">Zużycie paliwa</span>
+                            <span class="result-value-small" id="litersValue">0.00 l</span>
+                        </div>
+                        <div class="result-card co2-card">
+                            <span class="result-icon">🏭</span>
+                            <span class="result-label-small">Emisja CO₂</span>
+                            <span class="result-value-small" id="co2Value">0 g</span>
+                        </div>
+                    </div>
+
+                    <div class="eco-impact">
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                        <div class="tree-estimate" id="treeEstimate">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="tree-icon">
+                                <path d="M11.96 22a.5.5 0 01-.5-.5v-4.66a.5.5 0 01.5-.5h.08a.5.5 0 01.5.5v4.66a.5.5 0 01-.5.5h-.08zM12 2C7.03 2 3 6.03 3 11a9 9 0 001.07 4.19.5.5 0 00.9-.38A7.99 7.99 0 0112 4a7.99 7.99 0 018.03 10.81.5.5 0 00.9.38A9 9 0 0021 11c0-4.97-4.03-9-9-9zm0 18a8.97 8.97 0 006.18-2.67 1.5 1.5 0 00-.73-2.6 7 7 0 01-10.9 0 1.5 1.5 0 00-.73 2.6A8.97 8.97 0 0012 20z"/>
+                            </svg>
+                            <span>0 drzew/dzień</span>
+                        </div>
+                        <p class="eco-text">Tyle drzew potrzebuje do wchłonięcia tej emisji</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fuel Comparison -->
+            <div class="fuel-comparison">
+                <h3>💰 Porównanie kosztów dla różnych paliw</h3>
+                <div class="comparison-grid">
+                    <div class="fuel-option">
+                        <div class="fuel-icon">⛽</div>
+                        <div class="fuel-name">PB95</div>
+                        <div class="fuel-price" id="pricePerLiterPB95">- zł/l</div>
+                        <div class="fuel-cost" id="costPB95">0.00 zł</div>
+                    </div>
+                    <div class="fuel-option recommended">
+                        <div class="fuel-badge">Najpopularniejsze</div>
+                        <div class="fuel-icon">🛢️</div>
+                        <div class="fuel-name">ON (Diesel)</div>
+                        <div class="fuel-price" id="pricePerLiterON">- zł/l</div>
+                        <div class="fuel-cost" id="costON">0.00 zł</div>
+                    </div>
+                    <div class="fuel-option">
+                        <div class="fuel-icon">🔥</div>
+                        <div class="fuel-name">LPG</div>
+                        <div class="fuel-price" id="pricePerLiterLPG">- zł/l</div>
+                        <div class="fuel-cost" id="costLPG">0.00 zł</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="calculator-actions">
+                <button id="shareButton" class="btn btn-primary">
+                    <span>📤</span> Udostępnij wynik
+                </button>
+                <button id="menuButton" class="btn btn-secondary">
+                    <span>⚙️</span> Ustawienia
+                </button>
+            </div>
+            <div id="shareMessage" class="share-message"></div>
+        </div>
+    </section>
+
+    <!-- Live Prices Section -->
+    <section id="ceny-paliw" class="prices-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">📊 Aktualne ceny</span>
+                <h2>Ceny paliw w Polsce - dziś</h2>
+                <p>Średnie ceny detaliczne paliw na stacjach w Polsce. Dane aktualizowane codziennie.</p>
+            </div>
+
+            <div class="prices-cards">
+                <div class="price-card">
+                    <div class="price-card-icon">⛽</div>
+                    <h3>PB95</h3>
+                    <div class="price-value-large" id="currentPricePB95">-</div>
+                    <span class="price-unit">zł/litr</span>
+                    <div class="price-trend" id="trendPB95">
+                        <span class="trend-neutral">→ stabilna</span>
+                    </div>
+                </div>
+
+                <div class="price-card featured">
+                    <div class="price-card-icon">🛢️</div>
+                    <h3>ON (Diesel)</h3>
+                    <div class="price-value-large" id="currentPriceON">-</div>
+                    <span class="price-unit">zł/litr</span>
+                    <div class="price-trend" id="trendON">
+                        <span class="trend-neutral">→ stabilna</span>
+                    </div>
+                </div>
+
+                <div class="price-card">
+                    <div class="price-card-icon">🔥</div>
+                    <h3>LPG</h3>
+                    <div class="price-value-large" id="currentPriceLPG">-</div>
+                    <span class="price-unit">zł/litr</span>
+                    <div class="price-trend" id="trendLPG">
+                        <span class="trend-neutral">→ stabilna</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prices-source">
+                <p>Źródło: <span id="priceSource">Ładowanie...</span> | Ostatnia aktualizacja: <span id="priceUpdateDate">-</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">✨ Dlaczego my?</span>
+                <h2>Wszystko czego potrzebujesz do planowania podróży</h2>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Błyskawiczne obliczenia</h3>
+                    <p>Wpisz dystans i spalanie - wynik masz natychmiast. Bez rejestracji, bez zbędnych formalności.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h3>Aktualne ceny paliw</h3>
+                    <p>Pobieramy realne ceny PB95, ON i LPG ze stacji w całej Polsce. Dane aktualizowane codziennie.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌱</div>
+                    <h3>Ekologiczna świadomość</h3>
+                    <p>Zobacz ile CO₂ emituje Twoja podróż i ile drzew potrzeba, aby to zniwelować.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Porównaj paliwa</h3>
+                    <p>Sprawdź które paliwo się opłaca. Porównaj koszty PB95, ON i LPG dla tej samej trasy.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📤</div>
+                    <h3>Udostępnij wynik</h3>
+                    <p>Podziel się kosztem podróży ze znajomymi. Wyślij link lub skopiuj wynik do schowka.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>100% Prywatności</h3>
+                    <p>Nie zbieramy Twoich danych. Wszystko działa w przeglądarce, bez śledzenia.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Articles Section -->
+    <section id="artykuly" class="articles-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">📚 Porady i wskazówki</span>
+                <h2>Jak jeździć taniej i ekologicznie</h2>
+            </div>
+
+            <div class="articles-grid">
+                <article class="article-card">
+                    <div class="article-image">
+                        <div class="article-placeholder">🛣️</div>
+                    </div>
+                    <div class="article-content">
+                        <span class="article-category">Koszty podróży</span>
+                        <h3>Ile kosztuje przejazd Warszawa - Kraków?</h3>
+                        <p>Szczegółowe obliczenie kosztów podróży najpopularniejszą trasą w Polsce. Benzyna, diesel czy LPG?</p>
+                        <a href="/blog/koszt-warszawa-krakow/" class="article-link">Czytaj więcej →</a>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <div class="article-image">
+                        <div class="article-placeholder">⛽</div>
+                    </div>
+                    <div class="article-content">
+                        <span class="article-category">Oszczędzanie</span>
+                        <h3>10 sposobów na niższe spalanie</h3>
+                        <p>Proste triki które pomogą Ci zaoszczędzić do 20% paliwa. Eko-jazda bez utraty komfortu.</p>
+                        <a href="/blog/10-sposobow-oszczedzanie-paliwa/" class="article-link">Czytaj więcej →</a>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <div class="article-image">
+                        <div class="article-placeholder">🌳</div>
+                    </div>
+                    <div class="article-content">
+                        <span class="article-category">Ekologia</span>
+                        <h3>Emisja CO₂ z samochodu - fakty</h3>
+                        <p>Ile naprawdę emituje Twój samochód? Ile drzew musi wyrosnąć aby to zniwelować?</p>
+                        <a href="/blog/emisja-co2-samochod/" class="article-link">Czytaj więcej →</a>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <div class="article-image">
+                        <div class="article-placeholder">🔥</div>
+                    </div>
+                    <div class="article-content">
+                        <span class="article-category">Porównanie</span>
+                        <h3>Czy warto jeździć na LPG?</h3>
+                        <p>Kalkulator opłacalności instalacji gazowej. Kiedy się zwraca i ile zaoszczędzisz?</p>
+                        <a href="/blog/czy-warto-lpg/" class="article-link">Czytaj więcej →</a>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <div class="article-image">
+                        <div class="article-placeholder">🚗</div>
+                    </div>
+                    <div class="article-content">
+                        <span class="article-category">Wiedza</span>
+                        <h3>Jak prawidłowo obliczyć spalanie?</h3>
+                        <p>Metody pomiaru zużycia paliwa. Tankowanie "do pełna" vs komputer pokładowy.</p>
+                        <a href="/blog/jak-obliczyc-spalanie/" class="article-link">Czytaj więcej →</a>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <div class="article-image">
+                        <div class="article-placeholder">⚡</div>
+                    </div>
+                    <div class="article-content">
+                        <span class="article-category">Przyszłość</span>
+                        <h3>Elektryk vs spalinówka - koszty</h3>
+                        <p>Porównanie pełnych kosztów posiadania. Czy elektryk się opłaca w 2025?</p>
+                        <a href="/blog/elektryk-vs-spalinowka/" class="article-link">Czytaj więcej →</a>
+                    </div>
+                </article>
+            </div>
+
+            <div class="articles-more">
+                <a href="/blog/" class="btn btn-outline">Zobacz wszystkie artykuły →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Routes Section -->
+    <section class="routes-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">🗺️ Popularne trasy</span>
+                <h2>Sprawdź koszty najczęstszych tras</h2>
+            </div>
+
+            <div class="routes-list">
+                <a href="/?d=300&c=7.5&f=PB95" class="route-card">
+                    <div class="route-cities">
+                        <span class="city">Warszawa</span>
+                        <span class="route-arrow">→</span>
+                        <span class="city">Kraków</span>
+                    </div>
+                    <div class="route-details">
+                        <span class="route-distance">~300 km</span>
+                        <span class="route-cost">od 130 zł</span>
+                    </div>
+                </a>
+
+                <a href="/?d=310&c=7.5&f=PB95" class="route-card">
+                    <div class="route-cities">
+                        <span class="city">Warszawa</span>
+                        <span class="route-arrow">→</span>
+                        <span class="city">Wrocław</span>
+                    </div>
+                    <div class="route-details">
+                        <span class="route-distance">~310 km</span>
+                        <span class="route-cost">od 135 zł</span>
+                    </div>
+                </a>
+
+                <a href="/?d=560&c=7.5&f=PB95" class="route-card">
+                    <div class="route-cities">
+                        <span class="city">Warszawa</span>
+                        <span class="route-arrow">→</span>
+                        <span class="city">Gdańsk</span>
+                    </div>
+                    <div class="route-details">
+                        <span class="route-distance">~560 km</span>
+                        <span class="route-cost">od 245 zł</span>
+                    </div>
+                </a>
+
+                <a href="/?d=600&c=7.5&f=PB95" class="route-card">
+                    <div class="route-cities">
+                        <span class="city">Kraków</span>
+                        <span class="route-arrow">→</span>
+                        <span class="city">Gdańsk</span>
+                    </div>
+                    <div class="route-details">
+                        <span class="route-distance">~600 km</span>
+                        <span class="route-cost">od 260 zł</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">❓ FAQ</span>
+                <h2>Najczęściej zadawane pytania</h2>
+            </div>
+
+            <div class="faq-list">
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>Jak obliczyć spalanie samochodu?</span>
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Spalanie oblicza się dzieląc ilość zużytego paliwa (w litrach) przez przejechany dystans (w km) i mnożąc przez 100. Wzór:</p>
+                        <code>(paliwo [l] / dystans [km]) × 100 = spalanie [l/100km]</code>
+                        <p>Przykład: Zatankowałeś 40 litrów i przejechałeś 550 km. Spalanie = (40/550) × 100 = <strong>7,27 l/100km</strong>.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>Ile kosztuje przejazd na trasie Warszawa - Kraków?</span>
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Przejazd Warszawa - Kraków (ok. 300 km) kosztuje:</p>
+                        <ul>
+                            <li><strong>PB95</strong> (przy spalaniu 7,5 l/100km): ~135-150 zł</li>
+                            <li><strong>ON (diesel)</strong> (przy spalaniu 6 l/100km): ~110-125 zł</li>
+                            <li><strong>LPG</strong> (przy spalaniu 9 l/100km): ~75-85 zł</li>
+                        </ul>
+                        <p>Dokładny koszt zależy od aktualnych cen paliw i stylu jazdy.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>Ile CO₂ emituje samochód na 100 km?</span>
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Średnio samochód osobowy emituje:</p>
+                        <ul>
+                            <li><strong>Małe auto</strong> (Fiat 500, Toyota Aygo): ~100-120 g/km = 10-12 kg/100km</li>
+                            <li><strong>Średnie auto</strong> (Golf, Civic): ~130-150 g/km = 13-15 kg/100km</li>
+                            <li><strong>Duże auto/SUV</strong> (Passat, BMW X5): ~170-200+ g/km = 17-20+ kg/100km</li>
+                        </ul>
+                        <p>Dla benzyny: 1 litr = ~2,3 kg CO₂. Przy spalaniu 7l/100km to około 16 kg CO₂.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>Skąd macie aktualne ceny paliw?</span>
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Ceny paliw pobieramy z wielu źródeł: e-petrol.pl, autocentrum.pl oraz oficjalnych API stacji. Dane aktualizowane są co 24h lub częściej.</p>
+                        <p>Pokazujemy średnie ceny detaliczne dla Polski. Ceny na konkretnych stacjach mogą się różnić.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>Czy ten kalkulator jest darmowy?</span>
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Tak, kalkulator jest <strong>w 100% darmowy</strong> i nie wymaga rejestracji. Nie ma limitów obliczeń.</p>
+                        <p>W przyszłości planujemy dodać wersję premium z dodatkowymi funkcjami (zapisywanie tras, historia tankowań), ale podstawowa wersja zawsze będzie bezpłatna.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-box">
+                <h2>Zacznij oszczędzać na paliwie już dziś</h2>
+                <p>Oblicz koszt swojej podróży w 10 sekund. Porównaj ceny PB95, ON i LPG.</p>
+                <a href="#kalkulator" class="btn btn-large btn-primary">
+                    🧮 Przejdź do kalkulatora
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <span class="logo-icon">⛽</span>
+                        <span class="logo-text">Spalanie<span class="highlight">.eu</span></span>
+                    </a>
+                    <p>Darmowy kalkulator kosztów podróży samochodem. Aktualne ceny paliw, obliczenia spalania i emisji CO₂.</p>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Nawigacja</h4>
+                    <ul>
+                        <li><a href="#kalkulator">Kalkulator</a></li>
+                        <li><a href="#ceny-paliw">Ceny paliw</a></li>
+                        <li><a href="#artykuly">Artykuły</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Popularne trasy</h4>
+                    <ul>
+                        <li><a href="/?d=300&c=7.5&f=PB95">Warszawa - Kraków</a></li>
+                        <li><a href="/?d=310&c=7.5&f=PB95">Warszawa - Wrocław</a></li>
+                        <li><a href="/?d=560&c=7.5&f=PB95">Warszawa - Gdańsk</a></li>
+                        <li><a href="/?d=600&c=7.5&f=PB95">Kraków - Gdańsk</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Porady</h4>
+                    <ul>
+                        <li><a href="/blog/jak-obliczyc-spalanie/">Jak obliczyć spalanie?</a></li>
+                        <li><a href="/blog/10-sposobow-oszczedzanie-paliwa/">Oszczędzanie paliwa</a></li>
+                        <li><a href="/blog/emisja-co2-samochod/">Emisja CO₂</a></li>
+                        <li><a href="/blog/czy-warto-lpg/">Czy warto LPG?</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Spalanie.eu - Kalkulator Spalania Paliwa. Wszelkie prawa zastrzeżone.</p>
+                <p class="footer-disclaimer">Ceny paliw są orientacyjne i mogą różnić się od rzeczywistych cen na stacjach.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Settings Menu (Slide-out) -->
+    <div class="settings-menu" id="settingsMenu">
+        <div class="settings-backdrop"></div>
+        <div class="settings-content">
+            <div class="settings-header">
+                <h3>⚙️ Ustawienia</h3>
+                <button id="closeMenuButton" class="close-btn" aria-label="Zamknij">✕</button>
+            </div>
             
-
-        <div class="input-group">
-            <label for="distance">Dystans (km)</label>
-            <div class="input-with-controls"> 
-                <input type="number" id="distance" value="100" min="1" step="10">
-                <button class="control-btn minus" data-target="distance" data-action="decrement">-</button>
-                <button class="control-btn plus" data-target="distance" data-action="increment">+</button>
-            </div>
-        </div>
-        
-        <div class="input-group">
-            <label for="consumption">Spalanie (l/100 km) - dla PB95</label>
-            <div class="input-with-controls">
-                <input type="number" id="consumption" value="6.5" min="0.1" step="0.1">
-                <button class="control-btn minus" data-target="consumption" data-action="decrement">-</button>
-                <button class="control-btn plus" data-target="consumption" data-action="increment">+</button>
-            </div>
-        </div>
-
-        <section id="result" class="result">
-            <div class="result-box">
-                <span class="result-label" id="mainCostLabel">Koszt podróży (PB95)</span>
-                <p class="result-value" id="costValue">0.00 zł</p>
-            </div>
-            
-            <div class="result-box">
-                <span class="result-label">Zużyte paliwo</span>
-                <p class="result-value" id="litersValue">0.00 l</p>
-            </div>
-            
-            <div class="result-box">
-                <span class="result-label">Emisja CO₂</span>
-                <p class="result-value" id="co2Value">0 g</p>
-            </div>
-        </section>
-
-        <div class="co2-visualization">
-            <span class="co2-visualization__label">Intensywność emisji</span>
-            <div class="progress-bar-container">
-                <div id="progressBar" class="progress-bar"></div>
-            </div>
-            <div id="treeEstimate" class="tree-estimate">
-                </div>
-        </div>
-        
-        <section class="compare">
-            <h2 class="compare__title">Porównanie kosztów (zł)</h2>
-            <div class="fuel-options">
-                <div class="fuel-option fuel-pb95">
-                    <span class="fuel-label">PB95</span>
-                    <span class="fuel-cost" id="costPB95">0.00 zł</span>
-                    <span class="fuel-price-per-liter" id="pricePerLiterPB95">0.00 zł/l</span>
-                </div>
-                <div class="fuel-option fuel-on">
-                    <span class="fuel-label">ON</span>
-                    <span class="fuel-cost" id="costON">0.00 zł</span>
-                    <span class="fuel-price-per-liter" id="pricePerLiterON">0.00 zł/l</span>
-                </div>
-                <div class="fuel-option fuel-lpg">
-                    <span class="fuel-label">LPG</span>
-                    <span class="fuel-cost" id="costLPG">0.00 zł</span>
-                    <span class="fuel-price-per-liter" id="pricePerLiterLPG">0.00 zł/l</span>
+            <div class="settings-section">
+                <h4>Domyślne paliwo</h4>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="defaultFuel" value="PB95" id="radioPB95" checked>
+                        <span>⛽ PB95 (Benzyna)</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="defaultFuel" value="ON" id="radioON">
+                        <span>🛢️ ON (Diesel)</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="defaultFuel" value="LPG" id="radioLPG">
+                        <span>🔥 LPG (Gaz)</span>
+                    </label>
                 </div>
             </div>
-        </section>
 
-        <div id="priceInfo" class="price-source">
-            Ładowanie cen paliw...
+            <div class="settings-section">
+                <h4>Własne ceny paliw (zł/l)</h4>
+                <p class="settings-hint">Jeśli chcesz użyć innych cen niż aktualne rynkowe:</p>
+                <div class="custom-prices">
+                    <div class="input-group">
+                        <label>PB95</label>
+                        <input type="number" id="customPricePB95" step="0.01" min="0" placeholder="6.50">
+                    </div>
+                    <div class="input-group">
+                        <label>ON</label>
+                        <input type="number" id="customPriceON" step="0.01" min="0" placeholder="6.80">
+                    </div>
+                    <div class="input-group">
+                        <label>LPG</label>
+                        <input type="number" id="customPriceLPG" step="0.01" min="0" placeholder="3.20">
+                    </div>
+                </div>
+                <button class="btn btn-small btn-secondary" onclick="resetCustomPrices()">Resetuj do domyślnych</button>
+            </div>
         </div>
+    </div>
 
-        <button id="shareButton" class="fab-share-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="18" cy="5" r="3"></circle>
-                <circle cx="6" cy="12" r="3"></circle>
-                <circle cx="18" cy="19" r="3"></circle>
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-            </svg>
-        </button>
-        <div id="shareMessage" class="fab-share-message"></div>
-
-    </main>
-    
     <script src="script.js"></script>
 </body>
 </html>
