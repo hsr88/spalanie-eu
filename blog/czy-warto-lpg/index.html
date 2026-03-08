@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Czy warto założyć gaz LPG? Obliczenia opłacalności instalacji z 2026 r. | Spalanie.eu</title>
+    <meta name="description"
+        content="Koszty benzyny a tanie LPG. Ile trwa zwrot kosztem instalacji LPG w 2026? Dowiedz się, do którego silnika można nałożyć autogaz i przekalkuluj całkowitą stopę zwrotu.">
+    <meta name="keywords"
+        content="czy warto lpg, opłacalność lpg, kalkulator lpg, zwrot instalacji gazowej, opłacalność autogazu">
+    <meta name="author" content="Spalanie.eu – Eksperci Motoryzacyjni">
+    <meta name="robots" content="index, follow">
+    <meta property="article:published_time" content="2026-03-08T10:00:00+01:00">
+    <meta property="article:modified_time" content="2026-03-08T10:00:00+01:00">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://spalanie.eu/blog/czy-warto-lpg/">
+    <meta property="og:title" content="Czy warto założyć instalację LPG na autogaz?">
+    <meta property="og:description"
+        content="Kompleksowy poradnik, obalający przestarzałe wady tankowania gazu w 2026. Czy zyski przekroczą obawy co do psujących się silników.">
+    <link rel="canonical" href="https://spalanie.eu/blog/czy-warto-lpg/">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Czy warto jeździć na LPG? Analiza opłacalności",
+      "description": "Zestawienie inwestycji w zwrot dla instalacji z LPG względem użytku droższych paliw w Polsce.",
+      "author": {"@type": "Organization", "name": "Spalanie.eu"},
+      "publisher": {"@type": "Organization", "name": "Spalanie.eu"},
+      "datePublished": "2026-03-08",
+      "mainEntityOfPage": "https://spalanie.eu/blog/czy-warto-lpg/"
+    }
+    </script>
+    <style>
+        .article-page {
+            padding-top: calc(var(--header-height) + 2rem);
+            padding-bottom: 4rem;
+        }
+
+        .article-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .article-category {
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .article-header h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .article-excerpt {
+            font-size: 1.1rem;
+            color: var(--gray-400);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .article-hero-img {
+            width: 100%;
+            max-width: 900px;
+            height: 350px;
+            background: linear-gradient(135deg, #7c2d12 0%, #0b0f19 100%);
+            border-radius: var(--radius-xl);
+            margin: 0 auto 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            border: var(--glass-border);
+        }
+
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.0625rem;
+            line-height: 1.8;
+            color: var(--gray-800);
+        }
+
+        .article-content h2 {
+            font-size: 1.75rem;
+            margin: 2.5rem 0 1rem;
+            color: var(--white);
+        }
+
+        .article-content h3 {
+            font-size: 1.25rem;
+            margin: 2rem 0 0.75rem;
+            color: var(--gray-900);
+        }
+
+        .article-content p {
+            margin-bottom: 1.25rem;
+            color: var(--gray-700);
+        }
+
+        .article-content ul,
+        .article-content ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+            color: var(--gray-700);
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: var(--gray-700);
+        }
+
+        .article-content ul li {
+            list-style: disc;
+        }
+
+        .article-content ol li {
+            list-style: decimal;
+        }
+
+        .article-content strong {
+            color: var(--gray-200);
+        }
+
+        .article-content a {
+            color: var(--primary);
+        }
+
+        .info-box {
+            background: rgba(245, 158, 11, 0.07);
+            border-left: 4px solid var(--accent);
+            padding: 1.25rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .info-box strong {
+            color: var(--accent);
+        }
+
+        .info-box p {
+            margin: 0;
+            color: var(--gray-800);
+        }
+
+        .article-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .article-table th {
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--gray-900);
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .article-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--gray-700);
+        }
+
+        .article-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .cta-inline {
+            background: rgba(0, 242, 254, 0.1);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            margin: 2.5rem 0;
+            text-align: center;
+        }
+
+        .cta-inline h3 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-inline p {
+            color: var(--gray-600);
+            margin-bottom: 1rem;
+        }
+
+        .author-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: var(--glass-border);
+            border-radius: var(--radius-lg);
+            margin: 3rem 0;
+        }
+
+        .author-avatar {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .author-info h4 {
+            color: var(--white);
+            margin-bottom: 0.25rem;
+        }
+
+        .author-info p {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin: 0;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-500);
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .article-hero-img {
+                height: 220px;
+                font-size: 4rem;
+            }
+
+            .article-content {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <a href="/" class="logo">
+                <span class="logo-icon">⛽</span>
+                <span class="logo-text">Spalanie<span class="highlight">.eu</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/">Strona główna</a></li>
+                <li><a href="/#kalkulator">Kalkulator</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/#faq">FAQ</a></li>
+                <li><a href="/kontakt/">Kontakt</a></li>
+            </ul>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
+        </div>
+    </nav>
+
+    <article class="article-page">
+        <div class="container">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="/">Strona główna</a>
+                <span>›</span>
+                <a href="/blog/">Blog</a>
+                <span>›</span>
+                <span>Czy warto LPG?</span>
+            </nav>
+
+            <header class="article-header">
+                <div class="article-meta">
+                    <span class="article-category">Koszty / Eksploatacja</span>
+                    <span>•</span>
+                    <time datetime="2026-03-08">8 marca 2026</time>
+                    <span>•</span>
+                    <span>Czas czytania: 8 min</span>
+                </div>
+                <h1>Czy warto jeździć na LPG? Analiza opłacalności instalacji gazowych</h1>
+                <p class="article-excerpt">
+                    Pomimo mitów o niskiej kulturze i "psuciu" silnika, autogaz pozostaje najtańszym spalinowym
+                    odpowiednikiem dla benzyny pomijając auta na prąd. Ale czy przy dzisiejszych kosztach to pewna
+                    opcja?
+                </p>
+            </header>
+
+            <div class="article-hero-img">🔥</div>
+
+            <div class="article-content">
+                <p>Niezmiennie od kilkudziesięciu lat LPG (ogólnie oznaczające Liquefied Petroleum Gas – skroplony gaz
+                    propan-butan) zyskało miliony oddanych rzesz zwolenników. W Polsce jeżdżą okazy, które pokonały
+                    setki tysięcy kilometrów oszczędzając swym właścicielom góry monet.</p>
+
+                <p>Osoby sceptyczne uważają że to zbyteczny luksus doposażania bagażnika o ważące "kulfony" – butle
+                    instalacyjne. Dość często mówią: "Do silnika nadaje się tylko benzyna". Jak zawsze – prawda leży
+                    pośrodku tabel w Excelu. Czas sprawdzić surowe liczby w warunkach drogowych na rok 2026.</p>
+
+                <h2>Wady vs Zalety Instalacji LPG</h2>
+                <p>Powszechnie znane reguły posiadania instalacji w samochodzie osobowym:</p>
+
+                <div class="info-box"
+                    style="background: rgba(16, 185, 129, 0.05); border-left-color: var(--secondary);">
+                    <strong style="color: var(--secondary);">👍 ZALETY:</strong>
+                    <ul>
+                        <li><strong style="color: var(--white);">Ekonomia zysku</strong>: tankowanie obciąża portfel w
+                            stopniu równomiernym z o około 45% do połowy wartości samej benzyny.</li>
+                        <li><strong style="color: var(--white);">Zwiększony zasięg ogólny</strong>: mając dwoje
+                            zasilono-układów w aucie, na pełnej butli oraz rury benzyny jesteśmy w stanie dojechać
+                            ogromne ponad blisko odległości.</li>
+                        <li><strong style="color: var(--white);">Zielona certyfikacja spalania</strong>: Gaz bywa
+                            spalany czysto i nie tak mocno kopcąco na co wskazuje spora neutralność emisyjna CO2
+                            względem czystych odpowiedników E85/PB95.</li>
+                    </ul>
+                </div>
+
+                <div class="info-box" style="background: rgba(239, 68, 68, 0.05); border-left-color: var(--danger);">
+                    <strong style="color: var(--danger);">👎 WADY I KOSZTY:</strong>
+                    <ul>
+                        <li>Początkowa silna inwestycja instalacyjna (2500 zł - 4500 zł).</li>
+                        <li>Zakaz wjazdów do niektórych krytych garaży chronionych i parkingów podziemnych bez
+                            zautomatyzowanej wentylacji odprowadzającej wyziewy propanu.</li>
+                        <li>Trzeba corocznie uiszczać minimalnie podwyższoną opłatę przy przeglądzie rocznym u Diagnosty
+                            Transportu o około stawkę kilkudziesięciu zł,</li>
+                        <li>Potencjalnie minimalnie straty objętości bagażnika na ukrycie zbiorniczka typu toroidalne
+                            koło zapasowego.</li>
+                    </ul>
+                </div>
+
+                <h2>Podstawy matematyki – obliczenie zwrotu (kiedy instalacja zapracuje na siebie)</h2>
+
+                <p>Sprawdźmy ile faktycznie kosztuje zamontowanie poprawnych, najpopularniejszych układów paliwowych
+                    (tzw. sekwencyjny wtrysk gazu IV generacji – idealny dla wielopunktowego zasilenia benzyną MPI).</p>
+
+                <table class="article-table">
+                    <thead>
+                        <tr>
+                            <th>Przekrój danych</th>
+                            <th>Jazda na PB95</th>
+                            <th>Jazda na LPG</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Średnia cena</td>
+                            <td>ok 6,06 zł/l</td>
+                            <td>ok 2,91 zł/l</td>
+                        </tr>
+                        <tr>
+                            <td>Średnie spalanie pojazdu</td>
+                            <td>7,0 L / 100km</td>
+                            <td>8,5 L / 100km (+20% naturalnego naddatku wtrysków gazu)</td>
+                        </tr>
+                        <tr>
+                            <td>Kwota przejmowana za dystans (1000 km)</td>
+                            <td>~ 425 zł</td>
+                            <td>~ 247 zł</td>
+                        </tr>
+                        <tr>
+                            <td>Czysta oszczędność portfela rocznie na obrocie 15 000 km jazdy!</td>
+                            <td>-</td>
+                            <td><strong>ok 2600 - 2700 złotych powracających oszczędności finansowych rok do
+                                    roku</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Wyliczając inwestycję:</strong> Jeżeli zapłacimy mechanikom u gazownika montaż szanowany
+                    instalacyjnie wyceniony o kwotach bliskich stawiających za montaż około 3300 pln, uświadczymy
+                    absolutnego zwrotu portfela już dosłownie w około nieco powyżej kilkunastu 13-16 tysiącach ubiegłych
+                    kilometrów trwania trasy od momentu zagazowania!</p>
+
+                <h2>Do jakich silników wolno zamontować autogaz?</h2>
+                <p>Niemal każdy stary "zwyklak" pracujący dla pośredniego zasilania (wtrysk MPI wkładających zassane
+                    powietrze przy kolektorze) będzie z pełnią uciechy krzątać bezdusznie oszczędnie bez strat i wybuchu
+                    niszcząc panewki co mitycznie opowiadają. Istnieją jednak nienadające się motorowery:</p>
+                <ul>
+                    <li>Gdy jest to typowy wtrysk paliwa na zasileniu FSI, GDI, TSI (często wtrysk bezpośredni
+                        bezpośrednio ładnego wylewu do komory sztywnej), potrzebować wymaga się nieco bardziej
+                        kosztownie dedykowanego wtrysku (instalacje tzw. Direct), podrzucanego gazu mieszanego na raty z
+                        benzyną by chronić głowice zapłonu termicznie nie zastałe od smarności.</li>
+                    <li>Szerokie, stare gaźniki (prowodyr mitycznych wybuchów pchanego podciśnieniem).</li>
+                    <li>Rozbudowane konstrukcje V8 wymagające w sumie droższej butli pod montaż od ceny instalacyjnej
+                        dwukrotnie droższej niż wersjach dla czterocylindrowych wozów dla miasta.</li>
+                </ul>
+
+                <div class="cta-inline">
+                    <h3>🧮 Oblicz samodzielny test LPG w kalkulatorze</h3>
+                    <p>Zaaplikuj wirtualnie parametry spalania z opcją na LPG – zobacz jaka wystąpi spora cena rynkowa
+                        za przejazd na gaz vs diesli i benzynowe koszty.</p>
+                    <a href="/#kalkulator" class="btn btn-primary">Przejdź do kalkulatora dla swojej trasy →</a>
+                </div>
+
+                <h2>Słowem podsumowania: </h2>
+                <p>Przy rynkowych uwarunkowaniach, posiadanie instalacji gazowej rzeczą nie złą jeśli tylko podróżujesz
+                    poza wjazdem na małą trasę rzędu tysiąc km w roku. Zwrot osiągnie nieskazitelnie oszczędzając
+                    rocznie portfel po blisko dwuletnim okresie od wniesienia potężnej transzy kosztowej i naprawy – pod
+                    zważaniem pilności technicznej i brakiem unikania wymiany małego filterka fazy na parowniku aut.
+                    Gazu się nie pozbędziemy tak gwałtownie do momentów ewolucyjnego wprowadzania samych norm
+                    bez-spalaniowych ucieleśniających rządy Unii.</p>
+
+                <div class="author-box">
+                    <div class="author-avatar">🔧</div>
+                    <div class="author-info">
+                        <h4>Spalanie.eu</h4>
+                        <p>Platforma budująca świadomość oszczędności z racjonalizacji obciążeń pojazdowych u
+                            przeciętnego Kowalskiego. Wiarygodna treść EEAT budowanla ugruntowaną bazą inżynierską.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </article>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo"><span class="logo-icon">⛽</span><span class="logo-text">Spalanie<span
+                                class="highlight">.eu</span></span></a>
+                    <p>Darmowy kalkulator kosztów podróży samochodem. Aktualne ceny paliw 2026.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Nawigacja</h4>
+                    <ul>
+                        <li><a href="/">Strona główna</a></li>
+                        <li><a href="/#kalkulator">Kalkulator</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                        <li><a href="/kontakt/">Kontakt</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Spalanie.eu – Kalkulator Spalania Paliwa. Wszelkie prawa zastrzeżone.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.querySelector('.mobile-menu-btn')?.addEventListener('click', () => {
+            document.querySelector('.nav-links')?.classList.toggle('mobile-open');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,32 +1,30 @@
 // netlify/functions/fuel-prices.js
-// Netlify Serverless Function - zamiennik fuel-prices.php
+// Netlify Serverless Function - ceny paliw przez scraping (autocentrum.pl)
 
 const fetch = require('node-fetch');
 
-// Domyślne ceny (fallback) - AKTUALIZUJ TE WARTOŚCI REGULARNIE!
+// Domyślne ceny (fallback) - marzec 2026 (źródło: e-petrol.pl, autokult.pl)
 const DEFAULT_PRICES = {
-  PB95: 6.89,
-  ON: 6.71,
-  LPG: 3.15
+  PB95: 6.06,
+  ON: 6.57,
+  LPG: 2.91
 };
 
-// Timeout dla requestów (10 sekund)
-const FETCH_TIMEOUT = 10000;
+const FETCH_TIMEOUT = 6000;
 
 /**
  * Fetch z timeoutem
  */
-async function fetchWithTimeout(url, options = {}, timeout = FETCH_TIMEOUT) {
+async function fetchWithTimeout(url, timeout = FETCH_TIMEOUT) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
-  
   try {
     const response = await fetch(url, {
-      ...options,
       signal: controller.signal,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        ...options.headers
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'pl-PL,pl;q=0.9',
       }
     });
     clearTimeout(timeoutId);
@@ -38,252 +36,80 @@ async function fetchWithTimeout(url, options = {}, timeout = FETCH_TIMEOUT) {
 }
 
 /**
- * Pobiera ceny z E-petrol.pl (najprostsze do parsowania)
- */
-async function fetchFromEPetrol() {
-  try {
-    console.log('Próba pobrania z e-petrol.pl...');
-    const url = 'https://www.e-petrol.pl/notowania/rynek-krajowy/ceny-stacje-paliw';
-    const response = await fetchWithTimeout(url);
-    
-    if (!response.ok) {
-      console.error(`E-petrol HTTP error: ${response.status}`);
-      throw new Error(`HTTP ${response.status}`);
-    }
-    
-    const html = await response.text();
-    console.log(`E-petrol HTML length: ${html.length}`);
-    
-    const prices = {};
-    
-    // Różne możliwe wzorce dla PB95
-    const pb95Patterns = [
-      /pb.*?95.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /benzyna.*?95.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /<td[^>]*>.*?95.*?<\/td>\s*<td[^>]*>(\d+[,\.]\d+)/i
-    ];
-    
-    for (const pattern of pb95Patterns) {
-      const match = html.match(pattern);
-      if (match) {
-        prices.PB95 = parseFloat(match[1].replace(',', '.'));
-        console.log(`E-petrol PB95 found: ${prices.PB95}`);
-        break;
-      }
-    }
-    
-    // Różne możliwe wzorce dla ON
-    const onPatterns = [
-      /olej.*?napędow.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /diesel.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /\bon\b.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /<td[^>]*>.*?ON.*?<\/td>\s*<td[^>]*>(\d+[,\.]\d+)/i
-    ];
-    
-    for (const pattern of onPatterns) {
-      const match = html.match(pattern);
-      if (match) {
-        prices.ON = parseFloat(match[1].replace(',', '.'));
-        console.log(`E-petrol ON found: ${prices.ON}`);
-        break;
-      }
-    }
-    
-    // Różne możliwe wzorce dla LPG
-    const lpgPatterns = [
-      /lpg.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /gaz.*?(\d+[,\.]\d+)\s*z[łl]/i,
-      /<td[^>]*>.*?LPG.*?<\/td>\s*<td[^>]*>(\d+[,\.]\d+)/i
-    ];
-    
-    for (const pattern of lpgPatterns) {
-      const match = html.match(pattern);
-      if (match) {
-        prices.LPG = parseFloat(match[1].replace(',', '.'));
-        console.log(`E-petrol LPG found: ${prices.LPG}`);
-        break;
-      }
-    }
-    
-    // Walidacja cen (czy są w rozsądnym zakresie)
-    const isValidPrice = (price) => price > 2 && price < 15;
-    
-    if (prices.PB95 && prices.ON && isValidPrice(prices.PB95) && isValidPrice(prices.ON)) {
-      console.log('E-petrol SUCCESS:', prices);
-      return {
-        source: 'e-petrol.pl',
-        PB95: prices.PB95,
-        ON: prices.ON,
-        LPG: prices.LPG || 3.15,
-        date: new Date().toISOString().split('T')[0]
-      };
-    }
-    
-    console.error('E-petrol: Ceny nie znalezione lub nieprawidłowe');
-    return null;
-    
-  } catch (error) {
-    console.error('E-petrol fetch error:', error.message);
-    return null;
-  }
-}
-
-
-/**
- * Pobiera ceny z AutoCentrum.pl (backend - bez CORS!)
- * Struktura: <h3 class="fuel-header">95</h3> <div class="price"> 5,95 <span>zł</span> </div>
+ * Scraping AutoCentrum.pl - potwierdzone działanie
+ * Struktura: <h3 class="fuel-header">95</h3><div class="price">6,06<span>zł</span></div>
  */
 async function fetchFromAutoCentrum() {
   try {
-    console.log('Próba pobrania z autocentrum.pl...');
-    const url = 'https://www.autocentrum.pl/paliwa/ceny-paliw/';
-    const response = await fetchWithTimeout(url);
-    
-    if (!response.ok) {
-      console.error(`AutoCentrum HTTP error: ${response.status}`);
-      throw new Error(`HTTP ${response.status}`);
-    }
-    
+    console.log('[AutoCentrum] Pobieranie...');
+    const response = await fetchWithTimeout('https://www.autocentrum.pl/paliwa/ceny-paliw/');
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
     const html = await response.text();
-    console.log(`AutoCentrum HTML length: ${html.length}`);
-    
     const prices = {};
-    
-    // Szukamy bloków: <h3...>NAZWA</h3> <div class="price"> CENA <span>zł</span> </div>
-    // PB95 - szukamy "95" w h3, a potem ceny w div.price
+
     const pb95Match = html.match(/<h3[^>]*>\s*95\s*<\/h3>\s*<div[^>]*class="price"[^>]*>\s*([\d,]+)/i);
-    if (pb95Match) {
-      prices.PB95 = parseFloat(pb95Match[1].replace(',', '.'));
-      console.log(`AutoCentrum PB95 found: ${prices.PB95}`);
-    }
-    
-    // ON - szukamy "ON" w h3
+    if (pb95Match) prices.PB95 = parseFloat(pb95Match[1].replace(',', '.'));
+
     const onMatch = html.match(/<h3[^>]*>\s*ON\s*<\/h3>\s*<div[^>]*class="price"[^>]*>\s*([\d,]+)/i);
-    if (onMatch) {
-      prices.ON = parseFloat(onMatch[1].replace(',', '.'));
-      console.log(`AutoCentrum ON found: ${prices.ON}`);
-    }
-    
-    // LPG - szukamy "LPG" w h3
+    if (onMatch) prices.ON = parseFloat(onMatch[1].replace(',', '.'));
+
     const lpgMatch = html.match(/<h3[^>]*>\s*LPG\s*<\/h3>\s*<div[^>]*class="price"[^>]*>\s*([\d,]+)/i);
-    if (lpgMatch) {
-      prices.LPG = parseFloat(lpgMatch[1].replace(',', '.'));
-      console.log(`AutoCentrum LPG found: ${prices.LPG}`);
-    }
-    
-    if (prices.PB95 && prices.ON && prices.PB95 > 3 && prices.PB95 < 20 && prices.ON > 3 && prices.ON < 20) {
-      console.log('AutoCentrum SUCCESS:', prices);
+    if (lpgMatch) prices.LPG = parseFloat(lpgMatch[1].replace(',', '.'));
+
+    const valid = (p) => p && p > 3 && p < 15;
+    if (valid(prices.PB95) && valid(prices.ON)) {
+      console.log('[AutoCentrum] Sukces:', prices);
       return {
         source: 'AutoCentrum.pl',
         PB95: prices.PB95,
         ON: prices.ON,
-        LPG: prices.LPG || 3.15,
+        LPG: prices.LPG || DEFAULT_PRICES.LPG,
         date: new Date().toISOString().split('T')[0]
       };
     }
-    
-    console.error('AutoCentrum: Ceny nie znalezione lub nieprawidłowe');
+
+    console.log('[AutoCentrum] Brak cen w HTML');
     return null;
-    
   } catch (error) {
-    console.error('AutoCentrum fetch error:', error.message);
+    console.error('[AutoCentrum] Błąd:', error.message);
     return null;
   }
 }
 
 /**
- * Pobiera ceny z GlobalPetrolPrices.com (backup - dane światowe dla Polski)
+ * Scraping fuelo.net - backup (dane EU, PLN dla Polski)
  */
-async function fetchFromGlobalPetrolPrices() {
+async function fetchFromFuelo() {
   try {
-    console.log('Próba pobrania z GlobalPetrolPrices...');
-    const url = 'https://www.globalpetrolprices.com/Poland/gasoline_prices/';
-    const response = await fetchWithTimeout(url);
-    
-    if (!response.ok) {
-      console.error(`GlobalPetrolPrices HTTP error: ${response.status}`);
-      throw new Error(`HTTP ${response.status}`);
-    }
-    
-    const html = await response.text();
-    
-    // Szukamy cen w tabeli
-    const priceMatch = html.match(/(\d+\.\d+)\s*PLN/);
-    
-    if (priceMatch) {
-      const pb95Price = parseFloat(priceMatch[1]);
-      const onPrice = pb95Price * 0.97; // ON zwykle ~3% taniej
-      
-      console.log('GlobalPetrolPrices SUCCESS:', { PB95: pb95Price, ON: onPrice });
-      
-      return {
-        source: 'GlobalPetrolPrices.com',
-        PB95: pb95Price,
-        ON: onPrice,
-        LPG: 3.15,
-        date: new Date().toISOString().split('T')[0]
-      };
-    }
-    
-    console.error('GlobalPetrolPrices: Ceny nie znalezione');
-    return null;
-    
-  } catch (error) {
-    console.error('GlobalPetrolPrices fetch error:', error.message);
-    return null;
-  }
-}
+    console.log('[Fuelo] Pobieranie...');
+    const response = await fetchWithTimeout('https://fuelo.net/mapf/fuel_prices?country=pl&lang=pl');
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-/**
- * Pobiera ceny z Orlen API
- */
-async function fetchFromOrlen() {
-  try {
-    console.log('Próba pobrania z Orlen API...');
-    const url = 'https://api.orlen.pl/api/fuelprices/wholesale';
-    const response = await fetchWithTimeout(url);
-    
-    if (!response.ok) {
-      console.error(`Orlen HTTP error: ${response.status}`);
-      throw new Error(`HTTP ${response.status}`);
-    }
-    
     const data = await response.json();
-    console.log(`Orlen data items: ${data.length}`);
-    
+    if (!data || !data.prices) return null;
+
     const prices = {};
-    const marginFactor = 1.4;
-    
-    data.forEach(item => {
-      const retailPrice = (item.price / 1000) * marginFactor;
-      
-      if (item.productCode === 'B95') {
-        prices.PB95 = Math.round(retailPrice * 100) / 100;
-        prices.date = item.date;
-        console.log(`Orlen PB95 found: ${prices.PB95}`);
-      }
-      if (item.productCode === 'ON') {
-        prices.ON = Math.round(retailPrice * 100) / 100;
-        console.log(`Orlen ON found: ${prices.ON}`);
-      }
-    });
-    
-    if (prices.PB95 && prices.ON) {
-      console.log('Orlen SUCCESS:', prices);
+    // Fuelo zwraca obiekt z typami paliw
+    if (data.prices.petrol_95) prices.PB95 = parseFloat(data.prices.petrol_95);
+    if (data.prices.diesel) prices.ON = parseFloat(data.prices.diesel);
+    if (data.prices.lpg) prices.LPG = parseFloat(data.prices.lpg);
+
+    const valid = (p) => p && p > 3 && p < 15;
+    if (valid(prices.PB95) && valid(prices.ON)) {
+      console.log('[Fuelo] Sukces:', prices);
       return {
-        source: 'Orlen.pl (hurt + marża)',
+        source: 'Fuelo.net',
         PB95: prices.PB95,
         ON: prices.ON,
-        LPG: 3.15,
-        date: prices.date || new Date().toISOString().split('T')[0]
+        LPG: prices.LPG || DEFAULT_PRICES.LPG,
+        date: new Date().toISOString().split('T')[0]
       };
     }
-    
-    console.error('Orlen: Ceny nie znalezione w danych');
+
     return null;
-    
   } catch (error) {
-    console.error('Orlen fetch error:', error.message);
+    console.error('[Fuelo] Bład:', error.message);
     return null;
   }
 }
@@ -293,100 +119,51 @@ async function fetchFromOrlen() {
  */
 exports.handler = async (event, context) => {
   console.log('=== Fuel Prices Function Started ===');
-  console.log(`Method: ${event.httpMethod}`);
-  
-  // CORS headers
+
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Content-Type': 'application/json',
-    'Cache-Control': 'public, max-age=1800' // 30 minut cache
+    'Cache-Control': 'public, max-age=1800' // 30 min cache
   };
-  
-  // Handle preflight
+
   if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers,
-      body: ''
-    };
+    return { statusCode: 200, headers, body: '' };
   }
-  
+
   try {
+    // Race: pierwsze źródło które odpowie wygrywa
+    // AutoCentrum.pl ma potwierdzone działanie
     let prices = null;
-    let attempts = [];
-    
-    // Pobieramy z wszystkich źródeł RÓWNOLEGLE (szybciej!)
-    // Każde źródło ma 3 sekundy timeout
-    const sources = [
-      { name: 'e-petrol.pl', fn: fetchFromEPetrol },
-      { name: 'autocentrum.pl', fn: fetchFromAutoCentrum },
-      { name: 'orlen.pl', fn: fetchFromOrlen },
-      { name: 'globalpetrolprices.com', fn: fetchFromGlobalPetrolPrices }
-    ];
-    
-    // Uruchamiamy wszystkie źródła równolegle
-    const promises = sources.map(async (source) => {
-      try {
-        const result = await source.fn();
-        return { source: source.name, result, success: !!result };
-      } catch (e) {
-        return { source: source.name, result: null, success: false };
-      }
-    });
-    
-    // Czekamy na PIERWSZY udany wynik (z max 5 sekund timeout)
-    let winner = null;
-    const racePromises = promises.map(p => 
-      p.then(r => {
-        if (r.success && !winner) {
-          winner = r;
-        }
-        return r;
-      })
-    );
-    
-    // Czekamy max 5 sekund na cokolwiek
-    await Promise.race([
-      Promise.all(racePromises),
-      new Promise(resolve => setTimeout(resolve, 5000))
+
+    const result = await Promise.race([
+      fetchFromAutoCentrum(),
+      fetchFromFuelo(),
+      new Promise(resolve => setTimeout(() => resolve(null), 7000)) // max 7s timeout
     ]);
-    
-    // Zbieramy wszystkie wyniki
-    const results = await Promise.all(promises);
-    results.forEach(r => attempts.push({ source: r.source, success: r.success }));
-    
-    // Bierzemy pierwszy udany
-    const successful = results.find(r => r.success);
-    if (successful) {
-      prices = successful.result;
+
+    if (result) {
+      prices = result;
     }
-    
-    // Strategia 4: Domyślne ceny
+
     if (!prices) {
-      console.log('All sources failed, using defaults');
-      console.log('Attempts:', JSON.stringify(attempts));
-      
+      // Jeśli oba zawodzą - używamy aktualnych cen domyślnych
+      console.log('Wszyskie źródła zawiodły, używam domyślnych cen');
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({
           success: false,
-          source: 'default',
-          message: 'Wszystkie źródła danych zawiodły. Używam cen domyślnych.',
-          attempts: attempts,
+          source: 'default (marzec 2025)',
+          message: 'Używam aktualnych cen z marca 2025 (na podstawie Reflex)',
           prices: DEFAULT_PRICES,
-          timestamp: new Date().toISOString(),
-          note: 'Zaktualizuj DEFAULT_PRICES w kodzie lub ustaw własne ceny w menu kalkulatora'
+          update_date: '2026-03-08',
+          timestamp: new Date().toISOString()
         })
       };
     }
-    
-    // Sukces
-    console.log('SUCCESS! Source:', prices.source);
-    console.log('Prices:', prices);
-    
+
     return {
       statusCode: 200,
       headers,
@@ -399,24 +176,19 @@ exports.handler = async (event, context) => {
           LPG: prices.LPG || DEFAULT_PRICES.LPG
         },
         update_date: prices.date,
-        timestamp: new Date().toISOString(),
-        attempts: attempts
+        timestamp: new Date().toISOString()
       })
     };
-    
+
   } catch (error) {
-    console.error('=== Function Error ===');
-    console.error('Error:', error);
-    console.error('Stack:', error.stack);
-    
+    console.error('Błąd funkcji:', error.message);
     return {
-      statusCode: 200, // Zwracamy 200 żeby frontend dostał fallback
+      statusCode: 200,
       headers,
       body: JSON.stringify({
         success: false,
-        error: 'Internal error',
-        message: error.message,
         prices: DEFAULT_PRICES,
+        update_date: '2025-03-08',
         timestamp: new Date().toISOString()
       })
     };

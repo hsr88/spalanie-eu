@@ -1,17 +1,17 @@
 // --- 1. STAŁE I ZMIENNE GLOBALNE ---
 
 // Domyślne ceny paliw (fallback) w zł/l
-// AKTUALIZACJA: 29.11.2025 - średnie ceny w Polsce
+// AKTUALIZACJA: marzec 2026 (źródło: autocentrum.pl)
 const DEFAULT_PRICES = {
-    PB95: 5.88,  // Aktualna średnia krajowa
-    ON: 6.19,    // Aktualna średnia krajowa
-    LPG: 2.61    // Aktualna średnia krajowa
+    PB95: 6.06,  // Aktualna średnia krajowa
+    ON: 6.57,    // Aktualna średnia krajowa
+    LPG: 2.91    // Aktualna średnia krajowa
 };
 
 // Współczynniki konwersji spalania w stosunku do PB95
 const CONSUMPTION_FACTORS = {
-    PB95: 1.0, 
-    ON: 0.9, 
+    PB95: 1.0,
+    ON: 0.9,
     LPG: 1.2
 };
 
@@ -73,8 +73,8 @@ const $mainCostLabel = document.getElementById('mainCostLabel');
 const $radioButtons = document.querySelectorAll('input[name="defaultFuel"]');
 const $controlButtons = document.querySelectorAll('.control-btn');
 
-const $shareButton = document.getElementById('shareButton'); 
-const $shareMessage = document.getElementById('shareMessage'); 
+const $shareButton = document.getElementById('shareButton');
+const $shareMessage = document.getElementById('shareMessage');
 
 // Nowe elementy dla ręcznego wprowadzania cen
 const $customPricePB95 = document.getElementById('customPricePB95');
@@ -114,9 +114,9 @@ function animateValue(el, start, end, duration, unit = '', precision = 2) {
     function step(timestamp) {
         const elapsed = timestamp - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
+
         current = start + range * progress;
-        
+
         const displayValue = progress === 1 ? end : current;
 
         if (precision === 0) {
@@ -159,11 +159,11 @@ function calculate() {
         $costPB95.textContent = '0.00 zł';
         $costON.textContent = '0.00 zł';
         $costLPG.textContent = '0.00 zł';
-        
+
         $pricePerLiterPB95.textContent = getPrice('PB95').toFixed(2) + ' zł/l';
         $pricePerLiterON.textContent = getPrice('ON').toFixed(2) + ' zł/l';
         $pricePerLiterLPG.textContent = getPrice('LPG').toFixed(2) + ' zł/l';
-        
+
         $mainCostLabel.textContent = `Koszt podróży (${defaultFuel})`;
 
         return;
@@ -206,10 +206,10 @@ function calculate() {
     // Aktualizacja UI
     const currentCost = parseFloat($costValue.textContent) || 0;
     animateValue($costValue, currentCost, mainCost, 1200, ' zł', 2);
-    
+
     const currentLiters = parseFloat($litersValue.textContent) || 0;
     animateValue($litersValue, currentLiters, mainLiters, 1400, ' l', 2);
-    
+
     const currentCo2 = parseInt($co2Value.textContent) || 0;
     animateValue($co2Value, currentCo2, co2_emission, 1500, ' g', 0);
 
@@ -232,11 +232,11 @@ function calculate() {
     }
 
     $treeEstimate.innerHTML = '<span style="font-size: 1.5rem;">' + TREE_EMOJI + '</span> ' + trees.toLocaleString() + ' drzew';
-    
+
     $costPB95.textContent = costPB95.toFixed(2) + ' zł';
     $costON.textContent = costON.toFixed(2) + ' zł';
     $costLPG.textContent = costLPG.toFixed(2) + ' zł';
-    
+
     $pricePerLiterPB95.textContent = getPrice('PB95').toFixed(2) + ' zł/l';
     $pricePerLiterON.textContent = getPrice('ON').toFixed(2) + ' zł/l';
     $pricePerLiterLPG.textContent = getPrice('LPG').toFixed(2) + ' zł/l';
@@ -253,13 +253,13 @@ function loadCustomPrices() {
     } else {
         $customPricePB95.value = '';
     }
-    
+
     if (customPrices.ON > 0) {
         $customPriceON.value = customPrices.ON.toFixed(2);
     } else {
         $customPriceON.value = '';
     }
-    
+
     if (customPrices.LPG > 0) {
         $customPriceLPG.value = customPrices.LPG.toFixed(2);
     } else {
@@ -286,10 +286,10 @@ function saveCustomPrices() {
 
 function toggleMenu() {
     const isOpen = $settingsMenu.classList.toggle('is-open');
-    
+
     if (isOpen) {
         loadCustomPrices();
-        
+
         const selectedRadio = document.getElementById(`radio${defaultFuel}`);
         if (selectedRadio) {
             selectedRadio.checked = true;
@@ -302,8 +302,8 @@ function handleFuelChange(event) {
     if (['PB95', 'ON', 'LPG'].includes(newFuel)) {
         defaultFuel = newFuel;
         localStorage.setItem(DEFAULT_FUEL_KEY, newFuel);
-        calculate(); 
-        toggleMenu(); 
+        calculate();
+        toggleMenu();
     }
 }
 
@@ -316,13 +316,13 @@ function handleControlClick(event) {
     const btn = event.currentTarget;
     const targetId = btn.dataset.target;
     const action = btn.dataset.action;
-    
+
     const targetInput = document.getElementById(targetId);
     if (!targetInput) return;
 
     let currentValue = parseFloat(targetInput.value);
     const step = parseFloat(targetInput.step) || 1;
-    
+
     if (isNaN(currentValue)) currentValue = parseFloat(targetInput.min) || 0;
 
     let newValue;
@@ -355,11 +355,11 @@ function handleOutsideClick(event) {
 
     const clickedOnMenuButton = event.target.closest('#menuButton');
     if (clickedOnMenuButton) {
-        return; 
+        return;
     }
 
     const clickedInsideMenu = event.target.closest('.settings-content');
-    
+
     if (!clickedInsideMenu) {
         toggleMenu();
     }
@@ -384,7 +384,7 @@ Moja podróż na dystansie ${distance} km (spalanie ${consumption} l/100 km) kos
 Emisja CO₂: ${co2} (~${trees}). 
 Oblicz swoje koszty!
 `;
-    
+
     const shareUrl = `${url.split('?')[0]}?d=${distance}&c=${consumption}&f=${defaultFuel}`;
 
     return {
@@ -441,24 +441,24 @@ function parseHTMLPrices(html) {
         // Tworzymy tymczasowy element do parsowania HTML
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
-        
+
         // Próba wyciągnięcia cen - różne możliwe struktury
         const prices = {
             PB95: null,
             ON: null,
             LPG: null
         };
-        
+
         // Szukamy po klasach lub ID (dostosuj do rzeczywistej struktury strony)
         const priceElements = doc.querySelectorAll('.fuel-price, .price-value, [data-fuel-price]');
-        
+
         priceElements.forEach(el => {
             const text = el.textContent.trim();
             const priceMatch = text.match(/(\d+[\.,]\d+)/);
-            
+
             if (priceMatch) {
                 const price = parseFloat(priceMatch[1].replace(',', '.'));
-                
+
                 // Identyfikacja rodzaju paliwa na podstawie kontekstu
                 const context = el.textContent.toLowerCase();
                 if (context.includes('95') || context.includes('pb95') || context.includes('benzyna')) {
@@ -470,7 +470,7 @@ function parseHTMLPrices(html) {
                 }
             }
         });
-        
+
         return prices;
     } catch (error) {
         console.error('Błąd parsowania HTML:', error);
@@ -489,13 +489,13 @@ async function fetchFromBackend() {
                 'Accept': 'application/json'
             }
         });
-        
+
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         if (data.success && data.prices) {
             return {
                 PB95: data.prices.PB95,
@@ -505,9 +505,9 @@ async function fetchFromBackend() {
                 date: data.update_date || data.timestamp
             };
         }
-        
+
         return null;
-        
+
     } catch (error) {
         console.error('Błąd pobierania z backendu:', error);
         return null;
@@ -525,22 +525,22 @@ async function fetchFromGlobalPetrolPrices() {
             'https://api.codetabs.com/v1/proxy?quest=',
             'https://api.allorigins.win/get?url='
         ];
-        
+
         const url = 'https://www.globalpetrolprices.com/Poland/gasoline_prices/';
-        
+
         let html = null;
         let usedProxy = '';
-        
+
         // Próbuj każdy proxy
         for (const proxy of proxies) {
             try {
                 console.log(`Próba GlobalPetrolPrices przez ${proxy}...`);
-                
+
                 const response = await fetch(proxy + encodeURIComponent(url), {
                     method: 'GET',
                     headers: { 'Accept': 'application/json' }
                 });
-                
+
                 if (response.ok) {
                     const data = await response.json();
                     html = data.contents || data;
@@ -552,30 +552,30 @@ async function fetchFromGlobalPetrolPrices() {
                 continue;
             }
         }
-        
+
         if (!html) {
             throw new Error('All proxies failed');
         }
-        
+
         console.log('GlobalPetrolPrices HTML length:', html.length);
-        
+
         // Szukamy ceny w PLN
-        const priceMatch = html.match(/(\d+\.\d+)\s*PLN/i) || 
-                          html.match(/price[^<]*?(\d+\.\d+)/i);
-        
+        const priceMatch = html.match(/(\d+\.\d+)\s*PLN/i) ||
+            html.match(/price[^<]*?(\d+\.\d+)/i);
+
         if (priceMatch) {
             const pb95Price = parseFloat(priceMatch[1]);
-            
+
             // Walidacja
             if (pb95Price > 4 && pb95Price < 10) {
                 // ON jest zwykle ~5% tańszy od PB95
                 const onPrice = Math.round(pb95Price * 0.95 * 100) / 100;
-                
+
                 // LPG jest ~40% tańszy
                 const lpgPrice = Math.round(pb95Price * 0.60 * 100) / 100;
-                
+
                 console.log('GlobalPetrolPrices SUCCESS:', { PB95: pb95Price, ON: onPrice, LPG: lpgPrice });
-                
+
                 return {
                     PB95: pb95Price,
                     ON: onPrice,
@@ -585,10 +585,10 @@ async function fetchFromGlobalPetrolPrices() {
                 };
             }
         }
-        
+
         console.error('GlobalPetrolPrices: Nie znaleziono ceny');
         return null;
-        
+
     } catch (error) {
         console.error('Błąd pobierania z GlobalPetrolPrices:', error);
         return null;
@@ -602,34 +602,34 @@ async function fetchFromAutoCentrum() {
     try {
         const CORS_PROXY = 'https://api.allorigins.win/get?url=';
         const url = encodeURIComponent('https://www.autocentrum.pl/paliwa/ceny-paliw/');
-        
+
         const response = await fetch(CORS_PROXY + url, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'
             }
         });
-        
+
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
         }
-        
+
         const data = await response.json();
         const html = data.contents;
-        
+
         console.log('AutoCentrum HTML length:', html.length);
-        
+
         // DEBUG: Pokaż fragment HTML z cenami
         const priceSection = html.match(/95[\s\S]{0,200}zł/);
         if (priceSection) {
             console.log('DEBUG - Fragment HTML z cenami:', priceSection[0]);
         }
-        
+
         // Parsowanie - szukamy bloków z konkretnymi paliwami
         const prices = {};
-        
+
         // ROZSZERZONE WZORCE - próbujemy różnych formatów
-        
+
         // PB95 - różne możliwe formaty
         const pb95Patterns = [
             /95[^\d]*?(\d+[,\.]\d+)\s*zł/i,
@@ -637,7 +637,7 @@ async function fetchFromAutoCentrum() {
             /benzyna.*?95[^\d]*?(\d+[,\.]\d+)\s*zł/i,
             />\s*95\s*<[\s\S]{0,100}?(\d+[,\.]\d+)\s*zł/i
         ];
-        
+
         for (const pattern of pb95Patterns) {
             const match = html.match(pattern);
             if (match) {
@@ -646,7 +646,7 @@ async function fetchFromAutoCentrum() {
                 break;
             }
         }
-        
+
         // ON - różne możliwe formaty
         const onPatterns = [
             /\bON\b[^+\d]*?(\d+[,\.]\d+)\s*zł/i,
@@ -654,7 +654,7 @@ async function fetchFromAutoCentrum() {
             /diesel[^\d]*?(\d+[,\.]\d+)\s*zł/i,
             />\s*ON\s*<[\s\S]{0,100}?(\d+[,\.]\d+)\s*zł/i
         ];
-        
+
         for (const pattern of onPatterns) {
             const match = html.match(pattern);
             if (match) {
@@ -663,14 +663,14 @@ async function fetchFromAutoCentrum() {
                 break;
             }
         }
-        
+
         // LPG - różne możliwe formaty
         const lpgPatterns = [
             /LPG[^\d]*?(\d+[,\.]\d+)\s*zł/i,
             /gaz[^\d]*?(\d+[,\.]\d+)\s*zł/i,
             />\s*LPG\s*<[\s\S]{0,100}?(\d+[,\.]\d+)\s*zł/i
         ];
-        
+
         for (const pattern of lpgPatterns) {
             const match = html.match(pattern);
             if (match) {
@@ -679,15 +679,15 @@ async function fetchFromAutoCentrum() {
                 break;
             }
         }
-        
+
         console.log('AutoCentrum znalezione ceny:', prices);
-        
+
         // Walidacja - czy mamy PB95 i ON, i czy są w rozsądnym zakresie
-        if (prices.PB95 && prices.ON && 
-            prices.PB95 > 4 && prices.PB95 < 10 && 
+        if (prices.PB95 && prices.ON &&
+            prices.PB95 > 4 && prices.PB95 < 10 &&
             prices.ON > 4 && prices.ON < 10 &&
             prices.PB95 !== prices.ON) {
-            
+
             console.log('AutoCentrum SUCCESS:', prices);
             return {
                 PB95: prices.PB95,
@@ -697,17 +697,17 @@ async function fetchFromAutoCentrum() {
                 date: new Date().toISOString().split('T')[0]
             };
         }
-        
+
         console.error('AutoCentrum: Ceny nieprawidłowe lub identyczne:', prices);
-        
+
         // DEBUG: Jeśli nie znalazło, pokaż WSZYSTKIE wystąpienia "zł"
         const allPrices = html.match(/(\d+[,\.]\d+)\s*zł/g);
         if (allPrices) {
             console.log('DEBUG - Wszystkie znalezione ceny w HTML:', allPrices.slice(0, 10));
         }
-        
+
         return null;
-        
+
     } catch (error) {
         console.error('Błąd pobierania z AutoCentrum:', error);
         return null;
@@ -720,24 +720,24 @@ async function fetchFromAutoCentrum() {
 async function fetchFromOrlen() {
     try {
         console.log('Próba pobrania z Orlen API...');
-        
+
         // Bezpośrednie wywołanie (bez proxy - Orlen API ma CORS)
         const url = 'https://api.orlen.pl/api/fuelprices/wholesale';
-        
+
         const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'
             }
         });
-        
+
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
         }
-        
+
         const data = await response.json();
         console.log(`Orlen otrzymano ${data.length} produktów`);
-        
+
         const prices = {
             PB95: null,
             ON: null,
@@ -745,11 +745,11 @@ async function fetchFromOrlen() {
             source: 'Orlen.pl (ceny hurtowe + marża)',
             date: null
         };
-        
+
         // Marża hurt → detal (1.35 zamiast 1.4)
         const marginFactor = 1.35;
         const getRetailPrice = (priceM3) => Math.round((priceM3 / 1000) * marginFactor * 100) / 100;
-        
+
         data.forEach(item => {
             if (item.productCode === 'B95') {
                 prices.PB95 = getRetailPrice(item.price);
@@ -761,15 +761,15 @@ async function fetchFromOrlen() {
                 console.log(`Orlen ON: ${prices.ON} zł/l`);
             }
         });
-        
+
         if (prices.PB95 && prices.ON) {
             console.log('Orlen SUCCESS:', prices);
             return prices;
         }
-        
+
         console.error('Orlen: Brak cen PB95 lub ON');
         return null;
-        
+
     } catch (error) {
         console.error('Błąd pobierania z Orlen:', error);
         return null;
@@ -785,7 +785,7 @@ function loadPricesFromCache() {
         if (cached) {
             const data = JSON.parse(cached);
             const age = Date.now() - data.timestamp;
-            
+
             // Cache ważny przez 24h
             if (age < FUEL_PRICES_CACHE_TTL && data.prices) {
                 console.log('Ceny załadowane z cache:', data.prices);
@@ -826,7 +826,7 @@ function savePricesToCache(prices, source, date) {
 async function fetchFuelPrices() {
     // KROK 1: Pokaż ceny od razu (z cache lub domyślne) - BEZ "ładowania"
     const cached = loadPricesFromCache();
-    
+
     if (cached) {
         // Mamy cache - pokaż od razu
         fuelPrices = cached.prices;
@@ -851,11 +851,11 @@ async function fetchFuelPrices() {
         `;
         $priceInfo.classList.add('price-source--success');
     }
-    
+
     // Przelicz od razu z dostępnymi cenami
     updatePriceSection();
     calculate();
-    
+
     // KROK 2: W tle pobierz nowe ceny (nie blokuj UI!)
     fetchPricesInBackground();
 }
@@ -870,11 +870,11 @@ async function fetchPricesInBackground() {
             headers: { 'Accept': 'application/json' },
             signal: AbortSignal.timeout(5000) // 5s timeout
         });
-        
+
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        
+
         const data = await response.json();
-        
+
         if (data.success && data.prices) {
             // Nowe ceny pobrane!
             fuelPrices = {
@@ -882,15 +882,15 @@ async function fetchPricesInBackground() {
                 ON: data.prices.ON || DEFAULT_PRICES.ON,
                 LPG: data.prices.LPG || DEFAULT_PRICES.LPG
             };
-            
+
             // Zapisz do cache
             savePricesToCache(fuelPrices, data.source, data.update_date);
-            
+
             const source = data.source || 'API';
-            const updateDate = data.update_date 
-                ? new Date(data.update_date).toLocaleDateString('pl-PL') 
+            const updateDate = data.update_date
+                ? new Date(data.update_date).toLocaleDateString('pl-PL')
                 : 'dziś';
-            
+
             $priceInfo.innerHTML = `
                 <div>✅ <b>Ceny aktualne</b> (${updateDate})</div>
                 <div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">
@@ -900,9 +900,9 @@ async function fetchPricesInBackground() {
                     Współczynniki: ON ×${CONSUMPTION_FACTORS.ON}, LPG ×${CONSUMPTION_FACTORS.LPG}
                 </div>
             `;
-            
+
             console.log('Ceny zaktualizowane:', fuelPrices, 'Źródło:', source);
-            
+
             // Przelicz z nowymi cenami
             updatePriceSection();
             calculate();
@@ -928,9 +928,9 @@ function updatePriceSection() {
         $currentPriceLPG.textContent = fuelPrices.LPG.toFixed(2);
     }
     if ($priceSource) {
-        $priceSource.textContent = document.getElementById('priceInfo')?.textContent?.includes('AutoCentrum') ? 'AutoCentrum.pl' : 
-                                   document.getElementById('priceInfo')?.textContent?.includes('Orlen') ? 'Orlen.pl' : 
-                                   document.getElementById('priceInfo')?.textContent?.includes('Global') ? 'GlobalPetrolPrices.com' : 'API';
+        $priceSource.textContent = document.getElementById('priceInfo')?.textContent?.includes('AutoCentrum') ? 'AutoCentrum.pl' :
+            document.getElementById('priceInfo')?.textContent?.includes('Orlen') ? 'Orlen.pl' :
+                document.getElementById('priceInfo')?.textContent?.includes('Global') ? 'GlobalPetrolPrices.com' : 'API';
     }
     if ($priceUpdateDate) {
         $priceUpdateDate.textContent = new Date().toLocaleDateString('pl-PL');
@@ -943,13 +943,13 @@ function updatePriceSection() {
 function resetCustomPrices() {
     customPrices = {};
     localStorage.removeItem(CUSTOM_PRICES_KEY);
-    
+
     if ($customPricePB95) $customPricePB95.value = '';
     if ($customPriceON) $customPriceON.value = '';
     if ($customPriceLPG) $customPriceLPG.value = '';
-    
+
     calculate();
-    
+
     // Pokaż powiadomienie
     if ($shareMessage) {
         $shareMessage.textContent = '✅ Przywrócono domyślne ceny';
@@ -965,25 +965,25 @@ function resetCustomPrices() {
  */
 function loadFromURL() {
     const params = new URLSearchParams(window.location.search);
-    
+
     const distance = params.get('d');
     const consumption = params.get('c');
     const fuel = params.get('f');
-    
+
     if (distance && !isNaN(distance)) {
         $distance.value = distance;
     } else {
         // Domyślny dystans 100 km
         $distance.value = '100';
     }
-    
+
     if (consumption && !isNaN(consumption)) {
         $consumption.value = consumption;
     } else {
         // Domyślne spalanie 7.5 l/100km
         $consumption.value = '7.5';
     }
-    
+
     if (fuel && ['PB95', 'ON', 'LPG'].includes(fuel)) {
         defaultFuel = fuel;
         localStorage.setItem(DEFAULT_FUEL_KEY, fuel);
@@ -996,7 +996,7 @@ function loadFromURL() {
 function init() {
     // Wczytaj parametry z URL (jeśli ktoś otwiera link udostępniony)
     loadFromURL();
-    
+
     // Pobierz aktualne ceny paliw
     fetchFuelPrices();
 
@@ -1010,13 +1010,13 @@ function init() {
 
     $menuButton.addEventListener('click', toggleMenu);
     $closeMenuButton.addEventListener('click', toggleMenu);
-    
-    document.addEventListener('click', handleOutsideClick); 
-    
+
+    document.addEventListener('click', handleOutsideClick);
+
     $radioButtons.forEach(radio => {
         radio.addEventListener('change', handleFuelChange);
     });
-    
+
     $customPricePB95.addEventListener('input', handleCustomPriceInput);
     $customPriceON.addEventListener('input', handleCustomPriceInput);
     $customPriceLPG.addEventListener('input', handleCustomPriceInput);
@@ -1025,24 +1025,24 @@ function init() {
     if (initialRadio) {
         initialRadio.checked = true;
     }
-    
+
     $controlButtons.forEach(button => {
         button.addEventListener('click', handleControlClick);
     });
 
     $shareButton.addEventListener('click', handleShareClick);
-    
+
     // Mobile menu toggle
     if ($mobileMenuBtn) {
         $mobileMenuBtn.addEventListener('click', () => {
             document.querySelector('.nav-links')?.classList.toggle('mobile-open');
         });
     }
-    
+
     // Główny wybór paliwa (w kalkulatorze)
     const mainFuelRadios = document.querySelectorAll('input[name="mainFuel"]');
     mainFuelRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
+        radio.addEventListener('change', function () {
             if (this.checked) {
                 defaultFuel = this.value;
                 localStorage.setItem(DEFAULT_FUEL_KEY, defaultFuel);
@@ -1050,11 +1050,18 @@ function init() {
             }
         });
     });
-    
+
     // Smooth scroll dla linków kotwiczących
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+        anchor.addEventListener('click', function (e) {
             e.preventDefault();
+
+            // Ukryj menu mobilne po kliknięciu
+            const navLinks = document.querySelector('.nav-links');
+            if (navLinks && navLinks.classList.contains('mobile-open')) {
+                navLinks.classList.remove('mobile-open');
+            }
+
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
                 target.scrollIntoView({
@@ -1064,13 +1071,13 @@ function init() {
             }
         });
     });
-    
+
     // Inicjalizacja sekcji cen
     updatePriceSection();
-    
+
     // Przelicz od razu (z domyślnymi wartościami)
     calculate();
-    
+
     // Odśwież ceny co 30 minut
     setInterval(fetchFuelPrices, 30 * 60 * 1000);
 }

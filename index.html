@@ -1,40 +1,51 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- SEO Meta Tags -->
     <title>Kalkulator Spalania Paliwa i Kosztów Podróży | Spalanie.eu</title>
-    <meta name="description" content="Oblicz koszt podróży samochodem. Aktualne ceny paliw PB95, ON, LPG. Sprawdź emisję CO₂ i ile drzew potrzeba do jej wchłonięcia. Darmowy kalkulator spalania.">
-    <meta name="keywords" content="kalkulator spalania, koszt podróży samochodem, ceny paliw, oblicz spalanie, emisja CO2, kalkulator paliwa, ile kosztuje przejazd">
+    <meta name="description"
+        content="Oblicz koszt podróży samochodem. Aktualne ceny paliw PB95, ON, LPG. Sprawdź emisję CO₂ i ile drzew potrzeba do jej wchłonięcia. Darmowy kalkulator spalania.">
+    <meta name="keywords"
+        content="kalkulator spalania, koszt podróży samochodem, ceny paliw, oblicz spalanie, emisja CO2, kalkulator paliwa, ile kosztuje przejazd">
     <meta name="author" content="Spalanie.eu">
     <meta name="robots" content="index, follow">
     <meta name="language" content="Polish">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://spalanie.eu/">
     <meta property="og:title" content="Kalkulator Spalania Paliwa i Kosztów Podróży">
-    <meta property="og:description" content="Oblicz koszt podróży, zużycie paliwa i emisję CO₂. Aktualne ceny PB95, ON, LPG.">
+    <meta property="og:description"
+        content="Oblicz koszt podróży, zużycie paliwa i emisję CO₂. Aktualne ceny PB95, ON, LPG.">
     <meta property="og:image" content="https://spalanie.eu/img/og-image.jpg">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://spalanie.eu/">
     <meta property="twitter:title" content="Kalkulator Spalania Paliwa">
     <meta property="twitter:description" content="Oblicz koszt podróży samochodem. Aktualne ceny paliw.">
     <meta property="twitter:image" content="https://spalanie.eu/img/og-image.jpg">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://spalanie.eu/">
-    
+
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
-    
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Styles -->
     <link rel="stylesheet" href="style.css">
-    
+
     <!-- Schema.org JSON-LD -->
     <script type="application/ld+json">
     {
@@ -56,7 +67,7 @@
         }
     }
     </script>
-    
+
     <!-- Schema.org FAQ -->
     <script type="application/ld+json">
     {
@@ -86,11 +97,28 @@
                     "@type": "Answer",
                     "text": "Średnio samochód osobowy emituje około 120-150 g CO₂ na kilometr, czyli 12-15 kg na 100 km. Dla benzyny PB95: 1 litr paliwa = ok. 2,3 kg CO₂. Przy spalaniu 7l/100km to około 16 kg CO₂."
                 }
+            },
+            {
+                "@type": "Question",
+                "name": "Dlaczego mój samochód spala więcej niż podaje producent?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Wyniki producenckie (np. normy WLTP) uzyskiwane są w laboratoriach. W świecie realnym ciśnienie opon, obciążenie bagażem, dynamiczne ruszanie i stosowanie klimatyzacji zwiększa spalanie o nawet 20-30%."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Czy opłaca się montować lpg do starego auta?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Jeśli jeździsz powyżej 10 tys. km rocznie, a auto zamierzasz trzymać ok. 2-3 lata – inwestycja rzędu 3 tysięcy złotych zwróci się w ciągu roku lub dwóch lat."
+                }
             }
         ]
     }
     </script>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="main-nav">
@@ -112,8 +140,10 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-bg">
-            <div class="hero-car-animation">🚗</div>
-            <div class="road"></div>
+            <video class="hero-video" autoplay loop muted playsinline>
+                <source src="./img/grok-video-a31e20e5-da5f-4770-9a6b-ddac0e2429ca (1).mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay"></div>
         </div>
         <div class="container">
             <div class="hero-content">
@@ -122,7 +152,7 @@
                     samochodem w 10 sekund
                 </h1>
                 <p class="hero-subtitle">
-                    Aktualne ceny paliw PB95, ON, LPG. Sprawdź spalanie, emisję CO₂ 
+                    Aktualne ceny paliw PB95, ON, LPG. Sprawdź spalanie, emisję CO₂
                     i ile drzew musi wyrosnąć, aby zniwelować Twój ślad węglowy.
                 </p>
                 <div class="hero-stats">
@@ -316,7 +346,8 @@
             </div>
 
             <div class="prices-source">
-                <p>Źródło: <span id="priceSource">Ładowanie...</span> | Ostatnia aktualizacja: <span id="priceUpdateDate">-</span></p>
+                <p>Źródło: <span id="priceSource">Ładowanie...</span> | Ostatnia aktualizacja: <span
+                        id="priceUpdateDate">-</span></p>
             </div>
         </div>
     </section>
@@ -385,7 +416,8 @@
                     <div class="article-content">
                         <span class="article-category">Koszty podróży</span>
                         <h3>Ile kosztuje przejazd Warszawa - Kraków?</h3>
-                        <p>Szczegółowe obliczenie kosztów podróży najpopularniejszą trasą w Polsce. Benzyna, diesel czy LPG?</p>
+                        <p>Szczegółowe obliczenie kosztów podróży najpopularniejszą trasą w Polsce. Benzyna, diesel czy
+                            LPG?</p>
                         <a href="/blog/koszt-warszawa-krakow/" class="article-link">Czytaj więcej →</a>
                     </div>
                 </article>
@@ -532,9 +564,12 @@
                         <span class="faq-icon">+</span>
                     </summary>
                     <div class="faq-answer">
-                        <p>Spalanie oblicza się dzieląc ilość zużytego paliwa (w litrach) przez przejechany dystans (w km) i mnożąc przez 100. Wzór:</p>
+                        <p>Spalanie oblicza się dzieląc ilość zużytego paliwa (w litrach) przez przejechany dystans (w
+                            km) i mnożąc przez 100. Wzór:</p>
                         <code>(paliwo [l] / dystans [km]) × 100 = spalanie [l/100km]</code>
-                        <p>Przykład: Zatankowałeś 40 litrów i przejechałeś 550 km. Spalanie = (40/550) × 100 = <strong>7,27 l/100km</strong>.</p>
+                        <p>Przykład: Zatankowałeś 40 litrów i przejechałeś 550 km. Spalanie = (40/550) × 100 =
+                            <strong>7,27 l/100km</strong>.
+                        </p>
                     </div>
                 </details>
 
@@ -572,12 +607,43 @@
 
                 <details class="faq-item">
                     <summary class="faq-question">
+                        <span>Dlaczego mój samochód spala więcej niż podaje producent?</span>
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Wyniki producenckie (wg WLTP) są estymacją na wystandaryzowanych torach. Twoje spalanie
+                            realne jest wyższe ponieważ:</p>
+                        <ul>
+                            <li>Używasz ogrzewania i klimatyzacji (+0.5l / 100km)</li>
+                            <li>Ruszasz dynamicznie spod świateł i stoisz w korkach miejskich</li>
+                            <li>Często miewasz zaniżone ciśnienie w oponach zimowych</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>Czy instalacja LPG w 2026 r. to jeszcze opłacalne rozwiązanie?</span>
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Tak. Przy obecnych cenach paliw LPG wciąż kosztuje około połowę mniej niż litr PB95. Pomimo
+                            zwiększonego zużycia w gazie (około 15% wyższej chłonności objętościowej), zwroty inwestycji
+                            w instalację (koszt ~3000 zł) przy rocznych przebiegach 15 000 km potrafią dokonać się już
+                            nawet w przeciągu lekko ponad roku!</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary class="faq-question">
                         <span>Skąd macie aktualne ceny paliw?</span>
                         <span class="faq-icon">+</span>
                     </summary>
                     <div class="faq-answer">
-                        <p>Ceny paliw pobieramy z wielu źródeł: e-petrol.pl, autocentrum.pl oraz oficjalnych API stacji. Dane aktualizowane są co 24h lub częściej.</p>
-                        <p>Pokazujemy średnie ceny detaliczne dla Polski. Ceny na konkretnych stacjach mogą się różnić.</p>
+                        <p>Ceny paliw pobieramy z wielu źródeł: e-petrol.pl, autocentrum.pl oraz oficjalnych API stacji.
+                            Dane aktualizowane są co 24h lub częściej.</p>
+                        <p>Pokazujemy średnie ceny detaliczne dla Polski. Ceny na konkretnych stacjach mogą się różnić.
+                        </p>
                     </div>
                 </details>
 
@@ -587,8 +653,10 @@
                         <span class="faq-icon">+</span>
                     </summary>
                     <div class="faq-answer">
-                        <p>Tak, kalkulator jest <strong>w 100% darmowy</strong> i nie wymaga rejestracji. Nie ma limitów obliczeń.</p>
-                        <p>W przyszłości planujemy dodać wersję premium z dodatkowymi funkcjami (zapisywanie tras, historia tankowań), ale podstawowa wersja zawsze będzie bezpłatna.</p>
+                        <p>Tak, kalkulator jest <strong>w 100% darmowy</strong> i nie wymaga rejestracji. Nie ma limitów
+                            obliczeń.</p>
+                        <p>W przyszłości planujemy dodać wersję premium z dodatkowymi funkcjami (zapisywanie tras,
+                            historia tankowań), ale podstawowa wersja zawsze będzie bezpłatna.</p>
                     </div>
                 </details>
             </div>
@@ -617,7 +685,8 @@
                         <span class="logo-icon">⛽</span>
                         <span class="logo-text">Spalanie<span class="highlight">.eu</span></span>
                     </a>
-                    <p>Darmowy kalkulator kosztów podróży samochodem. Aktualne ceny paliw, obliczenia spalania i emisji CO₂.</p>
+                    <p>Darmowy kalkulator kosztów podróży samochodem. Aktualne ceny paliw, obliczenia spalania i emisji
+                        CO₂.</p>
                 </div>
 
                 <div class="footer-links">
@@ -649,11 +718,21 @@
                         <li><a href="/blog/czy-warto-lpg/">Czy warto LPG?</a></li>
                     </ul>
                 </div>
+                <div class="footer-links">
+                    <h4>Informacje i Prawo</h4>
+                    <ul>
+                        <li><a href="/regulamin/">Regulamin Serwisu</a></li>
+                        <li><a href="/polityka-prywatnosci/">Polityka Prywatności</a></li>
+                        <li><a href="/kontakt/">Kontakt i E-E-A-T</a></li>
+                    </ul>
+                </div>
+
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2025 Spalanie.eu - Kalkulator Spalania Paliwa. Wszelkie prawa zastrzeżone.</p>
-                <p class="footer-disclaimer">Ceny paliw są orientacyjne i mogą różnić się od rzeczywistych cen na stacjach.</p>
+                <p>&copy; 2026 Spalanie.eu - Kalkulator Spalania Paliwa. Wszelkie prawa zastrzeżone.</p>
+                <p class="footer-disclaimer">Ceny paliw są orientacyjne i mogą różnić się od rzeczywistych cen na
+                    stacjach.</p>
             </div>
         </div>
     </footer>
@@ -666,7 +745,7 @@
                 <h3>⚙️ Ustawienia</h3>
                 <button id="closeMenuButton" class="close-btn" aria-label="Zamknij">✕</button>
             </div>
-            
+
             <div class="settings-section">
                 <h4>Domyślne paliwo</h4>
                 <div class="radio-group">
@@ -707,6 +786,46 @@
         </div>
     </div>
 
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-banner"
+        style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(11, 15, 25, 0.95); backdrop-filter: blur(10px); padding: 1.5rem; z-index: 9999; border-top: var(--glass-border); box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);">
+        <div class="container"
+            style="display: flex; flex-direction: column; gap: 1rem; align-items: center; justify-content: space-between; max-width: 1000px; margin: 0 auto; text-align: center;">
+            <div style="flex-grow: 1;">
+                <h4 style="color: var(--white); margin-bottom: 0.5rem; font-size: 1.1rem;">Używamy plików cookies 🍪
+                </h4>
+                <p style="color: var(--gray-400); font-size: 0.9375rem; margin: 0; max-width: 800px;">
+                    Nasz serwis Spalanie.eu korzysta z plików cookies (w tym Google Analytics) do analizy ruchu i
+                    zapewnienia poprawnego działania funkcjonalności.
+                    Klikając "Akceptuję", wyrażasz zgodę na używanie wszystkich ciasteczek wg naszej <a
+                        href="/polityka-prywatnosci/"
+                        style="color: var(--primary); text-decoration: underline;">Polityki Prywatności</a>.
+                </p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button id="cookie-decline" class="btn btn-secondary btn-small"
+                    style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">Odmów</button>
+                <button id="cookie-accept" class="btn btn-primary btn-small">Akceptuję</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('cookie-consent')) {
+                document.getElementById('cookie-banner').style.display = 'block';
+            }
+            document.getElementById('cookie-accept').addEventListener('click', () => {
+                localStorage.setItem('cookie-consent', 'accepted');
+                document.getElementById('cookie-banner').style.display = 'none';
+            });
+            document.getElementById('cookie-decline').addEventListener('click', () => {
+                localStorage.setItem('cookie-consent', 'declined');
+                document.getElementById('cookie-banner').style.display = 'none';
+            });
+        });
+    </script>
+
     <script src="script.js"></script>
 </body>
+
 </html>

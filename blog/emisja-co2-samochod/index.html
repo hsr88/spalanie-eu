@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ile CO2 emituje Twój samochód na 100 km? Fakty o emisji | Spalanie.eu</title>
+    <meta name="description"
+        content="Poznaj fakty o emisji CO2 z samochodu. Ile średnio gram na kilometr emituje diesel, a ile benzyna? Dlaczego rosną podatki środowiskowe na samochody z silnikiem spalinowym?">
+    <meta name="keywords"
+        content="emisja co2 samochód, ile co2 emituje auto, kalkulator emisji, podatek od emisji, ślad węglowy samochodu">
+    <meta name="author" content="Spalanie.eu – Ośrodek Wiedzy Motoryzacyjnej">
+    <meta name="robots" content="index, follow">
+    <meta property="article:published_time" content="2026-03-08T10:00:00+01:00">
+    <meta property="article:modified_time" content="2026-03-08T10:00:00+01:00">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://spalanie.eu/blog/emisja-co2-samochod/">
+    <meta property="og:title" content="Ile CO2 emituje Twój samochód?">
+    <meta property="og:description"
+        content="Ślad węglowy motoryzacji jest potężny. Sprawdź ile dwutlenku węgla dosłownie idzie w powietrze z rury wydechowej.">
+    <link rel="canonical" href="https://spalanie.eu/blog/emisja-co2-samochod/">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Ile CO2 emituje Twój samochód na 100 km? Fakty o emisji",
+      "description": "Przelicznik emisji gramów CO2 spalin każdego samochodu na polskim rynku z podziałem diesel i benzyna.",
+      "author": {"@type": "Organization", "name": "Spalanie.eu"},
+      "publisher": {"@type": "Organization", "name": "Spalanie.eu"},
+      "datePublished": "2026-03-08",
+      "mainEntityOfPage": "https://spalanie.eu/blog/emisja-co2-samochod/"
+    }
+    </script>
+    <style>
+        .article-page {
+            padding-top: calc(var(--header-height) + 2rem);
+            padding-bottom: 4rem;
+        }
+
+        .article-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .article-category {
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .article-header h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .article-excerpt {
+            font-size: 1.1rem;
+            color: var(--gray-400);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .article-hero-img {
+            width: 100%;
+            max-width: 900px;
+            height: 350px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0b0f19 100%);
+            border-radius: var(--radius-xl);
+            margin: 0 auto 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            border: var(--glass-border);
+        }
+
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.0625rem;
+            line-height: 1.8;
+            color: var(--gray-800);
+        }
+
+        .article-content h2 {
+            font-size: 1.75rem;
+            margin: 2.5rem 0 1rem;
+            color: var(--white);
+        }
+
+        .article-content p {
+            margin-bottom: 1.25rem;
+            color: var(--gray-700);
+        }
+
+        .article-content ul {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+            color: var(--gray-700);
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: var(--gray-700);
+        }
+
+        .article-content ul li {
+            list-style: disc;
+        }
+
+        .article-content strong {
+            color: var(--gray-200);
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.07);
+            border-left: 4px solid #3b82f6;
+            padding: 1.25rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .info-box strong {
+            color: #3b82f6;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: var(--gray-800);
+        }
+
+        .article-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .article-table th {
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--gray-900);
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .article-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--gray-700);
+        }
+
+        .author-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: var(--glass-border);
+            border-radius: var(--radius-lg);
+            margin: 3rem 0;
+        }
+
+        .author-avatar {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .author-info h4 {
+            color: var(--white);
+            margin-bottom: 0.25rem;
+        }
+
+        .author-info p {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin: 0;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-500);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <a href="/" class="logo"><span class="logo-icon">⛽</span><span class="logo-text">Spalanie<span
+                        class="highlight">.eu</span></span></a>
+            <ul class="nav-links">
+                <li><a href="/">Strona główna</a></li>
+                <li><a href="/#kalkulator">Kalkulator</a></li>
+                <li><a href="/blog/">Blog</a></li>
+            </ul>
+        </div>
+    </nav>
+    <article class="article-page">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="/">Strona główna</a><span>›</span><a href="/blog/">Blog</a><span>›</span><span>Emisja
+                    CO2</span>
+            </nav>
+            <header class="article-header">
+                <div class="article-meta"><span class="article-category">Ekologia</span><span>•</span><time
+                        datetime="2026-03-08">8 marca 2026</time><span>•</span><span>Czas czytania: 5 min</span></div>
+                <h1>Ile CO2 emituje Twój samochód na 100 km? Fakty o emisji spalin</h1>
+                <p class="article-excerpt">Ślad węglowy transportu drogowego to blisko w udziale dziedziny Unii powód
+                    restrykcyjnych działań opłacania emisji (system Fit For 55). Zejdźcie ze wskaźnikami.</p>
+            </header>
+            <div class="article-hero-img">🌳</div>
+            <div class="article-content">
+                <p>Osobowe transport drogowy przyczyniają się masowo do obciążenia klimatycznego. Czy zastanawiasz się,
+                    że za litrem spalonego paliwa stoisz dosłownie wypuszczenia paru kilogramów spalin, którego
+                    powietrze nam nie przebaczy z powodu efektu cieplarnianego? Dochodząc do merytoryki chemicznych
+                    podstaw – przyjrzyjmy się twardym danym ile spala klasyczny motor benzynowy rzucony na asfaltowych
+                    podróży.</p>
+
+                <h2>Prosta Chemia Spalania (Ile waży ten gaz?)</h2>
+                <div class="info-box">
+                    <strong>1 Litr to około ~2.31 kg CO2</strong>
+                    <p>Uzasadnienie jest proste chemicznym związkiem tlenu dodawanym ze świeżego powietrza. Litr typowej
+                        benzyny silnikowej ma masę o ok. 750 gram, gdzie prawie absolutnie z tlenem oddychającym z
+                        otoczenia wytwarza ciężki, duszący i dymiący ekwiwalent przyrody ważący ~2.3 kg do ponad 2.6 kg
+                        (w dieslu) trujących związków emitujących się przez wydechy!</p>
+                </div>
+
+                <h2>Jak przechodzi to na kilometry (g/km) ? </h2>
+                <p>Przekładając to na europejski certyfikat homologacyjnej wartości, uważa się iż auta powinny oddawać
+                    <strong>nie więcej niż przewiduje norma określona w dokumentacji wozu podana w rzędach
+                        g/km</strong>. Policzmy by to dowieść empirycznie na Twoim kalkulatorze:</p>
+
+                <table class="article-table">
+                    <thead>
+                        <tr>
+                            <th>Zużycie benzyny PB95</th>
+                            <th>Emisja CO2 z rury ogółem (na 100km)</th>
+                            <th>Wynik normy WLTP/NEDC pojazdu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>5 L / 100km</td>
+                            <td>~ 11,5 kg CO2 </td>
+                            <td>115 g / km </td>
+                        </tr>
+                        <tr>
+                            <td>7 L / 100km</td>
+                            <td>~ 16,1 kg CO2 </td>
+                            <td>161 g / km</td>
+                        </tr>
+                        <tr>
+                            <td>10 L / 100km (Duży wóz)</td>
+                            <td>~ 23,0 kg CO2 </td>
+                            <td>230 g / km </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>A diesel?</strong> Dieslowska mieszanka ma gęstość i kaloryczność lekko wyższą, dlatego
+                    pomimo że auto tego typu pali 5 litrów względem odpowiednika na 6 benzynie, <strong>1 litr ON
+                        emituje 2.64 kg CO2</strong>. Czyli uciecha mniejszego baku sprowadza się do bardzo mocnego
+                    równaniania środowiskowego per g/km.</p>
+
+                <h2>Czy te cyfry poszły w las? Ile drzew musisz mieć by odkupić te grzechy trasy drogowej?</h2>
+                <p>W typowy, wielkomiejski polski rok kierowcy średnio podróżują rocznie pokonując przebywając tory 15
+                    000 kilometrów drogowych. Mnożąc to przy wyważonym spalaniu (7 l/100km / ponad ~16.1kg CO2/100km) -
+                    wypuszczamy w niebiosa przez jeden rok potworne blisko <strong>2400 KG Dwutlenku Węgla</strong>.</p>
+                <p>Szacuje się, że 1 dojrzałe, rozrośnięte i posadzone dębopodobne drzewo potrafi zmagazynować do 25 kg
+                    lotnej emisji węglowodorowej. Policz sobie samemu ucinając złudzenia... potrzeba <strong>~96
+                        stuletnich drzew pracujących wyłącznie na Twój jeden samochód osiedlowy w roku</strong>, aby
+                    całkowicie i ze spokojnym żywym czysto bytem wyrównać emisyjne ślady podróży z domu do urzędu, na
+                    uczelnię, do małej wiejskiej miejscowości czy za zachodnie zjazdy rynkowe.</p>
+
+                <div class="author-box">
+                    <div class="author-avatar">🌱</div>
+                    <div class="author-info">
+                        <h4>Spalanie.eu Ekologia (Inżynierzy środowiska)</h4>
+                        <p>Staramy się przybliżać wagę motoryzacji pod wpływem jej wrogości na globalne ogrzewanie
+                            atmosfery gazów cieplarnianych w roku 2026 z uwzględniem norm.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+</body>
+
+</html>

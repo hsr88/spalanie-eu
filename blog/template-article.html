@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- SEO Meta Tags - WYPEŁNIJ DLA KAŻDEGO ARTYKUŁU -->
     <title>TYTUŁ ARTYKUŁU | Blog Spalanie.eu</title>
     <meta name="description" content="OPIS ARTYKUŁU - 150-160 znaków dla SEO">
     <meta name="keywords" content="słowa, kluczowe, po, przecinku">
     <meta name="author" content="Spalanie.eu">
     <meta name="robots" content="index, follow">
-    
+
     <!-- Open Graph -->
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://spalanie.eu/blog/NAZWA-ARTYKULU/">
@@ -19,26 +20,27 @@
     <meta property="og:image" content="https://spalanie.eu/blog/img/NAZWA-OBRAZKA.jpg">
     <meta property="article:published_time" content="2025-03-07T12:00:00+01:00">
     <meta property="article:author" content="Spalanie.eu">
-    
+
     <!-- Canonical -->
     <link rel="canonical" href="https://spalanie.eu/blog/NAZWA-ARTYKULU/">
-    
+
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
-    
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
+
     <link rel="stylesheet" href="../style.css">
     <style>
         /* Dodatkowe style dla bloga */
         .article-page {
             padding-top: calc(var(--header-height) + 2rem);
         }
-        
+
         .article-header {
             text-align: center;
             max-width: 800px;
             margin: 0 auto 3rem;
         }
-        
+
         .article-meta {
             display: flex;
             justify-content: center;
@@ -47,20 +49,20 @@
             font-size: 0.875rem;
             margin-bottom: 1rem;
         }
-        
+
         .article-category {
             color: var(--primary);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
-        
+
         .article-header h1 {
             font-size: 2.5rem;
             line-height: 1.2;
             margin-bottom: 1rem;
         }
-        
+
         .article-image {
             width: 100%;
             max-width: 900px;
@@ -73,53 +75,56 @@
             justify-content: center;
             font-size: 6rem;
         }
-        
+
         .article-content {
             max-width: 800px;
             margin: 0 auto;
             font-size: 1.125rem;
             line-height: 1.8;
+            color: var(--gray-800);
         }
-        
+
         .article-content h2 {
             font-size: 1.75rem;
             margin: 2.5rem 0 1rem;
-            color: var(--gray-900);
+            color: var(--white);
         }
-        
+
         .article-content h3 {
             font-size: 1.375rem;
             margin: 2rem 0 0.75rem;
-            color: var(--gray-800);
+            color: var(--gray-900);
         }
-        
+
         .article-content p {
             margin-bottom: 1.5rem;
-            color: var(--gray-600);
+            color: var(--gray-700);
         }
-        
-        .article-content ul, .article-content ol {
+
+        .article-content ul,
+        .article-content ol {
             margin-bottom: 1.5rem;
             padding-left: 1.5rem;
+            color: var(--gray-700);
         }
-        
+
         .article-content li {
             margin-bottom: 0.5rem;
-            color: var(--gray-600);
+            color: var(--gray-700);
         }
-        
+
         .article-content ul li {
             list-style: disc;
         }
-        
+
         .article-content ol li {
             list-style: decimal;
         }
-        
+
         .article-content strong {
-            color: var(--gray-900);
+            color: var(--white);
         }
-        
+
         .highlight-box {
             background: var(--gray-50);
             border-left: 4px solid var(--primary);
@@ -127,7 +132,7 @@
             margin: 2rem 0;
             border-radius: 0 var(--radius) var(--radius) 0;
         }
-        
+
         .calculator-embed {
             background: var(--white);
             border: 2px solid var(--gray-200);
@@ -136,11 +141,11 @@
             margin: 2rem 0;
             text-align: center;
         }
-        
+
         .calculator-embed h3 {
             margin-bottom: 1rem;
         }
-        
+
         .cta-box-article {
             background: var(--gradient-primary);
             color: var(--white);
@@ -149,12 +154,12 @@
             margin: 3rem 0;
             text-align: center;
         }
-        
+
         .cta-box-article h3 {
             color: var(--white);
             margin-bottom: 0.5rem;
         }
-        
+
         .author-box {
             display: flex;
             align-items: center;
@@ -164,7 +169,7 @@
             border-radius: var(--radius-lg);
             margin: 3rem 0;
         }
-        
+
         .author-avatar {
             width: 60px;
             height: 60px;
@@ -175,33 +180,33 @@
             justify-content: center;
             font-size: 1.5rem;
         }
-        
+
         .author-info h4 {
             margin-bottom: 0.25rem;
         }
-        
+
         .author-info p {
             font-size: 0.875rem;
             color: var(--gray-500);
             margin: 0;
         }
-        
+
         .related-articles {
             margin-top: 4rem;
             padding-top: 3rem;
             border-top: 1px solid var(--gray-200);
         }
-        
+
         .related-articles h3 {
             margin-bottom: 1.5rem;
         }
-        
+
         .share-buttons {
             display: flex;
             gap: 0.5rem;
             margin: 2rem 0;
         }
-        
+
         .share-btn {
             padding: 0.5rem 1rem;
             border-radius: var(--radius);
@@ -210,31 +215,43 @@
             cursor: pointer;
             transition: opacity 0.2s;
         }
-        
+
         .share-btn:hover {
             opacity: 0.8;
         }
-        
-        .share-facebook { background: #1877f2; color: white; }
-        .share-twitter { background: #1da1f2; color: white; }
-        .share-linkedin { background: #0a66c2; color: white; }
-        
+
+        .share-facebook {
+            background: #1877f2;
+            color: white;
+        }
+
+        .share-twitter {
+            background: #1da1f2;
+            color: white;
+        }
+
+        .share-linkedin {
+            background: #0a66c2;
+            color: white;
+        }
+
         @media (max-width: 768px) {
             .article-header h1 {
                 font-size: 1.75rem;
             }
-            
+
             .article-image {
                 height: 250px;
                 font-size: 4rem;
             }
-            
+
             .article-content {
                 font-size: 1rem;
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="main-nav">
@@ -265,7 +282,7 @@
                 </div>
                 <h1>Tytuł artykułu - przykładowy nagłówek H1</h1>
                 <p class="article-excerpt">
-                    Krótki wstęp do artykułu który pojawi się w wynikach wyszukiwania i na liście artykułów. 
+                    Krótki wstęp do artykułu który pojawi się w wynikach wyszukiwania i na liście artykułów.
                     Powinien zachęcać do przeczytania całości.
                 </p>
             </header>
@@ -275,7 +292,7 @@
             <div class="article-content">
                 <!-- Wstęp -->
                 <p>
-                    <strong>Wstęp do artykułu.</strong> Tutaj rozpisujemy o czym będzie artykuł, 
+                    <strong>Wstęp do artykułu.</strong> Tutaj rozpisujemy o czym będzie artykuł,
                     dlaczego to ważne dla czytelnika i co z niego wyniesie.
                 </p>
 
@@ -291,7 +308,7 @@
                 </div>
 
                 <h2 id="sekcja-1">1. Pierwsza sekcja artykułu</h2>
-                
+
                 <p>
                     Treść pierwszej sekcji. Możesz używać <strong>pogrubień</strong> dla ważnych informacji,
                     tworzyć listy punktowane lub numerowane.
@@ -306,7 +323,7 @@
                 <h3>Podsekcja z dodatkowymi szczegółami</h3>
 
                 <p>
-                    Treść podsekcji. Im więcej szczegółów i wartościowych informacji, 
+                    Treść podsekcji. Im więcej szczegółów i wartościowych informacji,
                     tym lepiej dla SEO i czytelnika.
                 </p>
 
@@ -326,7 +343,7 @@
 
                 <div class="highlight-box">
                     <strong>💡 Ciekawostka:</strong>
-                    Możesz używać takich wyróżnionych boxów dla ważnych informacji, 
+                    Możesz używać takich wyróżnionych boxów dla ważnych informacji,
                     ciekawostek lub ostrzeżeń.
                 </div>
 
@@ -339,8 +356,10 @@
                 <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
                     <thead>
                         <tr style="background: var(--gray-100);">
-                            <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--gray-200);">Parametr</th>
-                            <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--gray-200);">Wartość</th>
+                            <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--gray-200);">
+                                Parametr</th>
+                            <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--gray-200);">
+                                Wartość</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -384,7 +403,8 @@
                     <div class="author-avatar">✍️</div>
                     <div class="author-info">
                         <h4>Zespół Spalanie.eu</h4>
-                        <p>Eksperci od kosztów podróży i ekologii. Tworzymy narzędzia które pomagają kierowcom oszczędzać i dbać o środowisko.</p>
+                        <p>Eksperci od kosztów podróży i ekologii. Tworzymy narzędzia które pomagają kierowcom
+                            oszczędzać i dbać o środowisko.</p>
                     </div>
                 </div>
             </div>
@@ -502,4 +522,5 @@
         });
     </script>
 </body>
+
 </html>
