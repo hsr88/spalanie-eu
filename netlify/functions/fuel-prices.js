@@ -133,18 +133,17 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Race: pierwsze źródło które odpowie wygrywa
-    // AutoCentrum.pl ma potwierdzone działanie
+    // Pobieranie danych. Najpierw AutoCentrum, jeżeli zawiedzie, uderz do Fuelo.
     let prices = null;
 
-    const result = await Promise.race([
-      fetchFromAutoCentrum(),
-      fetchFromFuelo(),
-      new Promise(resolve => setTimeout(() => resolve(null), 7000)) // max 7s timeout
-    ]);
-
-    if (result) {
-      prices = result;
+    try {
+      prices = await fetchFromAutoCentrum();
+      if (!prices) {
+        prices = await fetchFromFuelo();
+      }
+    } catch (e) {
+      console.log('Błąd podczas próby pobrania z jednego ze żródeł, próbuję dalej...', e);
+      if (!prices) prices = await fetchFromFuelo();
     }
 
     if (!prices) {

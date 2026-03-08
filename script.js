@@ -906,11 +906,27 @@ async function fetchPricesInBackground() {
             // Przelicz z nowymi cenami
             updatePriceSection();
             calculate();
+        } else {
+            // Awaryjne rozwiązanie (backend zwrócił success: false)
+            throw new Error(data.message || 'API zgłosiło brak danych');
         }
     } catch (error) {
-        console.log('Aktualizacja cen w tle nieudana (niekrytyczne):', error.message);
-        // Cicho ignoruj błąd - użytkownik ma już ceny (cache lub domyślne)
-        // Nie zmieniamy wyświetlanego komunikatu
+        console.log('Aktualizacja cen w tle nieudana:', error.message);
+        // Usuń informację o "aktualizowaniu w tle"
+        const existingDefaultInfo = $priceInfo.innerHTML;
+        if (existingDefaultInfo.includes('Aktualizuję w tle...')) {
+            $priceInfo.innerHTML = `
+                <div>⚠️ <b>Ceny awaryjne/domyślne</b></div>
+                <div style="font-size: 0.85em; margin-top: 5px; opacity: 0.8;">
+                    PB95: ${fuelPrices.PB95} zł | ON: ${fuelPrices.ON} zł | LPG: ${fuelPrices.LPG} zł
+                </div>
+                <div style="font-size: 0.75em; margin-top: 3px; color: var(--color-red); opacity: 0.8;">
+                    Niedostępne dane z API. Powrót do taryfy domyślnej.
+                </div>
+            `;
+            $priceInfo.classList.remove('price-source--success');
+            $priceInfo.classList.add('price-source--default');
+        }
     }
 }
 
